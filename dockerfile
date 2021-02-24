@@ -9,4 +9,4 @@ RUN wget -O server.jar ${JAR_FILE_URL}
 
 RUN java -version
 
-CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "server.jar", "nogui"]
+CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "server.jar"]
