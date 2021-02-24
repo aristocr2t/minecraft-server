@@ -1,0 +1,54 @@
+version: '3.7'
+services:
+  server:
+    build:
+      context: '.'
+      args:
+        JAR_FILE_URL: '${JAR_FILE_URL}'
+    image: '${SERVER_HOST}'
+    container_name: '${SERVER_HOST}'
+    depends_on:
+      - 'postgres'
+    env_file:
+      - '.env/${ENV}.env'
+    restart: 'unless-stopped'
+    ports:
+      - '${EXPOSE_SERVER}:${SERVER_PORT}'
+    networks:
+      - 'minecraft'
+    volumes:
+      - 'minecraft_server:/app'
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '10'
+        max-size: '1m'
+  postgres:
+    image: 'postgres:11.7'
+    container_name: '${POSTGRES_HOST}'
+    env_file:
+      - '.env/${ENV}.env'
+    restart: 'unless-stopped'
+    ports:
+      - '${EXPOSE_POSTGRES}:5432'
+    networks:
+      - 'minecraft'
+    volumes:
+      - '/data/minecraft/${ENV}/postgres:/var/lib/postgresql/data'
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '10'
+        max-size: '1m'
+volumes:
+  minecraft_server:
+    driver: 'local'
+    name: '${SERVER_HOST}'
+    driver_opts:
+      type: 'none'
+      device: '${PWD}/server'
+      o: 'bind'
+networks:
+  minecraft:
+    name: '${NETWORK_NAME}'
+    driver: 'bridge'
