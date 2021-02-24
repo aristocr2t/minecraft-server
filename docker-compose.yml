@@ -5,6 +5,7 @@ services:
       context: '.'
       args:
         JAR_FILE_URL: '${JAR_FILE_URL}'
+    user: '1000:1000'
     image: '${SERVER_HOST}'
     container_name: '${SERVER_HOST}'
     depends_on:
