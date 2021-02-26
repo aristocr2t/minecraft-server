@@ -18,15 +18,6 @@ bash_ts() {
 	echo -e "\e[33m$(date +'%Y-%m-%d %H:%M:%S.%3N')\e[39m"
 }
 
-mkdir -p server/
-
-if [ ! "$(docker ps -aq -f name=^$POSTGRES_HOST$)" ]; then
-	echo "$(bash_ts) install $POSTGRES_HOST"
-	docker-compose up --detach --build postgres
-elif [ "$(docker ps -aq -f status=exited -f name=^$POSTGRES_HOST$)" ]; then
-	docker start $POSTGRES_HOST >/dev/null
-fi
-
 if [ ! "$(docker ps -aq -f name=^$SERVER_HOST$)" ]; then
 	echo "$(bash_ts) install $SERVER_HOST"
 	docker-compose up --detach --build server
