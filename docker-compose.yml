@@ -13,28 +13,11 @@ services:
     restart: 'unless-stopped'
     ports:
       - '${EXPOSE_SERVER}:${SERVER_PORT}'
-      - '127.0.0.1:${EXPOSE_DYNMAP}:${DYNMAP_PORT}'
+      - '${EXPOSE_DYNMAP}:${DYNMAP_PORT}'
     networks:
       - 'minecraft'
     volumes:
       - '${PWD}/server:/app'
-    logging:
-      driver: 'json-file'
-      options:
-        max-file: '10'
-        max-size: '1m'
-  postgres:
-    image: 'postgres:11.7'
-    container_name: '${POSTGRES_HOST}'
-    env_file:
-      - '.env/${ENV}.env'
-    restart: 'unless-stopped'
-    ports:
-      - '${EXPOSE_POSTGRES}:5432'
-    networks:
-      - 'minecraft'
-    volumes:
-      - '/data/minecraft/${ENV}/postgres:/var/lib/postgresql/data'
     logging:
       driver: 'json-file'
       options:
