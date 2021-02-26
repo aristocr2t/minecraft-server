@@ -13,6 +13,7 @@ services:
     restart: 'unless-stopped'
     ports:
       - '${EXPOSE_SERVER}:${SERVER_PORT}'
+      - '127.0.0.1:${EXPOSE_DYNMAP}:${DYNMAP_PORT}'
     networks:
       - 'minecraft'
     volumes:
