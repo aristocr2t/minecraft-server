@@ -3,8 +3,6 @@ services:
   server:
     build:
       context: '.'
-      args:
-        JAR_FILE_URL: '${JAR_FILE_URL}'
     user: '1000:1000'
     image: '${SERVER_HOST}'
     container_name: '${SERVER_HOST}'
@@ -15,7 +13,6 @@ services:
     restart: 'unless-stopped'
     ports:
       - '${EXPOSE_SERVER}:${SERVER_PORT}'
-      - '25575:25575'
     networks:
       - 'minecraft'
     volumes:
