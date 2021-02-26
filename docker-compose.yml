@@ -19,7 +19,7 @@ services:
     networks:
       - 'minecraft'
     volumes:
-      - 'minecraft_server:/app'
+      - '${PWD}/server:/app'
     logging:
       driver: 'json-file'
       options:
@@ -42,14 +42,6 @@ services:
       options:
         max-file: '10'
         max-size: '1m'
-volumes:
-  minecraft_server:
-    driver: 'local'
-    name: '${SERVER_HOST}'
-    driver_opts:
-      type: 'none'
-      device: '${PWD}/server'
-      o: 'bind'
 networks:
   minecraft:
     name: '${NETWORK_NAME}'
