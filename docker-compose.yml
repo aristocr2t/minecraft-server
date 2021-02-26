@@ -6,8 +6,6 @@ services:
     user: '1000:1000'
     image: '${SERVER_HOST}'
     container_name: '${SERVER_HOST}'
-    depends_on:
-      - 'postgres'
     env_file:
       - '.env/${ENV}.env'
     restart: 'unless-stopped'
