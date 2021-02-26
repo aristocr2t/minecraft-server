@@ -103,4 +103,10 @@ dist
 # TernJS port file
 .tern-port
 
-server/
+server/*
+server/plugins/*
+!server/plugins/
+!server/server.properties
+!server/server.jar
+!server/mcrcon
+!server/plugins/*.jar
