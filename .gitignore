@@ -116,6 +116,7 @@ server/plugins/*
 !server/plugins/PermissionsEx/
 !server/plugins/WorldEdit/
 !server/plugins/WorldGuard/
+!server/plugins/LockLogin/
 
 server/plugins/dynmap/*
 !server/plugins/dynmap/configuration.txt
@@ -134,3 +135,10 @@ server/plugins/WorldEdit/*
 
 server/plugins/WorldGuard/*
 !server/plugins/WorldGuard/config.yml
+
+server/plugins/LockLogin/*
+!server/plugins/LockLogin/mysql.yml
+!server/plugins/LockLogin/allowed.yml
+!server/plugins/LockLogin/spawn.yml
+!server/plugins/LockLogin/config.yml
+!server/plugins/LockLogin/lang/
