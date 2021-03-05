@@ -1,11 +1,11 @@
 version: '3.7'
 services:
   server:
-    build:
-      context: '.'
+    build: '.'
     user: '1000:1000'
     image: '${SERVER_HOST}'
     container_name: '${SERVER_HOST}'
+    command: 'java -Dfile.encoding=UTF-8 -Xmx1024M -Xms1024M -jar server.jar nogui'
     env_file:
       - '.env/${ENV}.env'
     restart: 'unless-stopped'

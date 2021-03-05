@@ -111,7 +111,25 @@ server/*
 
 server/plugins/*
 !server/plugins/*.jar
+!server/plugins/ChatEx/
 !server/plugins/dynmap/
+!server/plugins/PermissionsEX/
+!server/plugins/WorldEdit/
+!server/plugins/WorldGuard/
 
 server/plugins/dynmap/*
 !server/plugins/dynmap/configuration.txt
+!server/plugins/dynmap/worlds.txt
+
+server/plugins/ChatEx/*
+!server/plugins/ChatEx/config.yml
+!server/plugins/ChatEx/locales/
+
+server/plugins/PermissionsEX/*
+!server/plugins/PermissionsEX/permissions.yml
+
+server/plugins/WorldEdit/*
+!server/plugins/WorldEdit/config.yml
+
+server/plugins/WorldGuard/*
+!server/plugins/WorldGuard/config.yml

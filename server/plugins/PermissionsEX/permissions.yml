@@ -1,0 +1,95 @@
+groups:
+  Player:
+    options:
+      rank: '1000'
+      default: true
+      prefix: '&8[&7Новичок&8] &f'
+    permissions:
+      - 'authme.player.*'
+      - 'betterrtp.world.world'
+      - 'betterrtp.use'
+      - 'modifyworld.*'
+      - 'essentials.build'
+      - 'essentials.delhome'
+      - 'essentials.msg'
+      - 'essentials.pay'
+      - 'essentials.spawn'
+      - 'essentials.warp'
+      - 'essentials.warps.*'
+      - 'worldguard.region.claim'
+      - 'worldguard.region.remove.own.*'
+      - 'worldguard.region.addmember.own.*'
+      - 'worldguard.region.addmember.member.*'
+      - 'worldguard.region.addmember.*'
+      - 'worldguard.region.removemember.own.*'
+      - 'worldguard.region.removemember.member.*'
+      - 'worldguard.region.removemember.*'
+      - 'worldguard.region.list.own'
+      - 'worldguard.region.list'
+      - 'worldguard.region.info.own'
+      - 'worldguard.region.info.member'
+      - 'worldguard.region.info.member.*'
+      - 'worldguard.region.info.*'
+      - 'worldedit.wand'
+      - 'worldedit.selection.pos'
+  Vip:
+    options:
+      rank: '500'
+      default: false
+      prefix: '&8[&eСвой&8] &f'
+    permissions:
+      - 'essentials.sethome'
+      - 'essentials.home'
+      - 'essentials.tpa'
+      - 'essentials.tpaccept'
+      - 'essentials.tpdeny'
+    inheritance:
+      - 'Player'
+  Premium:
+    options:
+      rank: '400'
+      default: false
+      prefix: '&8[&6Premium&8] &f'
+    permissions:
+      - 'essentials.feed'
+      - 'essentials.heal'
+    inheritance:
+      - 'Player'
+      - 'Vip'
+  Moderator:
+    options:
+      rank: '200'
+      default: false
+      prefix: '&8[&9Модератор&8] &f'
+    permissions:
+      - 'essentials.ptime'
+      - 'essentials.ptime.others'
+      - 'essentials.kick'
+    inheritance:
+      - 'Player'
+      - 'Vip'
+      - 'Premium'
+  Administrator:
+    options:
+      rank: '100'
+      default: false
+      prefix: '&8[&bАдминистратор&8] &f'
+    permissions:
+      - 'essentials.pweather'
+      - 'essentials.pweather.others'
+      - 'essentials.ban'
+      - 'essentials.ban.offline'
+      - 'essentials.unban'
+      - 'essentials.kill'
+    inheritance:
+      - 'Player'
+      - 'Vip'
+      - 'Premium'
+      - 'Moderator'
+  Owner:
+    options:
+      default: false
+      prefix: '&6[&cВладелец&6] &f'
+    permissions:
+      - '*'
+schema-version: 1
