@@ -36,8 +36,8 @@ check-for-updates: true
 enable-bstats: true
 bungeecord: false
 cross_server_timeout: 3
-message-format: '%prefix%Player%suffix: %message'
-global-message-format: '&9[%world] %prefix%Player%suffix: &e%message'
+message-format: '%prefix%player%suffix: %message'
+global-message-format: '&9[%world] %prefix%player%suffix: &e%message'
 multi-prefixes: false
 multi-suffixes: false
 ranged-mode: false
@@ -112,7 +112,7 @@ BlockedWords:
   - 'хуй'
 Tablist:
   Change: true
-  format: '%prefix%Player%suffix'
+  format: '%prefix%player%suffix'
 Messages:
   JoinAndQuit:
     Enabled: false
