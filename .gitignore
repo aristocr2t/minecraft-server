@@ -104,9 +104,14 @@ dist
 .tern-port
 
 server/*
-server/plugins/*
-!server/plugins/
-!server/server.properties
-!server/server.jar
 !server/mcrcon
+!server/server.jar
+!server/server.properties
+!server/plugins/
+
+server/plugins/*
 !server/plugins/*.jar
+!server/plugins/dynmap/
+
+server/plugins/dynmap/*
+!server/plugins/dynmap/configuration.txt
