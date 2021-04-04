@@ -28,11 +28,11 @@ worlds:
   # Use visibilitylimits to restrict which areas of maps on your world to render (zero or more shapes can be defined)
   # For a rectangle, the area is defined by x0, z0 to x1, z1
   # For a circle, the area is defined by a center at x,z with a radius 'r'
-  visibilitylimits:
-    - x0: -3000
-      z0: -3000
-      x1: 3000
-      z1: 3000
+  #visibilitylimits:
+  #  - x0: -3000
+  #    z0: -3000
+  #    x1: 3000
+  #    z1: 3000
     # - x: -2000
     #   z: -1000
     #   r: 200

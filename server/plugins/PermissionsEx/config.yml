@@ -7,13 +7,13 @@ permissions:
   log-players: false
   createUserRecords: false
   save-default-group: false
-  backend: 'file'
+  backend: file
   informplayers:
     changes: false
-  basedir: 'plugins/PermissionsEx'
+  basedir: plugins/PermissionsEx
   backends:
     file:
-      type: 'file'
-      file: 'permissions.yml'
+      type: file
+      file: permissions.yml
 updater: true
 alwaysUpdate: false

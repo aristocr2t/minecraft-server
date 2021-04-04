@@ -15,5 +15,5 @@
 #I don't recommend this since can cause
 #security issues
 AllowedCommands:
-  # - 'examplecommand'
-  # - 'example:command'
+  - 'examplecommand'
+  - 'example:command'
