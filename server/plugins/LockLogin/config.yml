@@ -11,7 +11,7 @@
 
 #This is used by 2fa
 #and some plugin messages
-ServerName: ''
+ServerName: 'nzgshbey'
 
 #Advanced filtering:
 # Makes the console filter
@@ -41,26 +41,6 @@ Register:
   TimeOut: 60
   Max: 2
 
-#Encryption configuration
-# Available types:
-# "SHA512"
-# "SHA256"
-# "BCrypt"
-# "Argon2i"
-# "Argon2id"
-Encryption:
-  Passwords: 'SHA512'
-  Pin: 'SHA512'
-
-#Azuriom integration options
-# Restrict -> Restrict new accounts to
-#             azuriom registered accounts
-#
-# SemiPremium -> Try to use online player UUID
-Azuriom:
-  Restrict: false
-  SemiPremium: false
-
 #Login options
 # Blind -> Applies a blind potion
 #          effect when the player
@@ -82,6 +62,61 @@ Login:
   TimeOut: 30
   MaxTries: 5
 
+#Login/Register messages in chat
+#interval, minimum is 5, maximum is
+#the specified in Login/Register section
+#( TimeOut time )
+MessagesInterval:
+  Registration: 5
+  Logging: 5
+
+#Captcha options
+# Available options:
+#   COMPLEX -> Requires to do /captcha <captcha> before
+#             login or register
+#   SIMPLE -> Requires to put the captcha during login
+#            and register
+#   DISABLED -> Completely disables this feature
+#              ( Not recommended, use it at your own risk )
+# TimeOut -> Set to 0 to disable
+#
+# Difficulty -> Captcha difficulty settings
+#   Length -> Captcha code length ( min is 8, max is 16 )
+#   Letters -> Include letters in the captcha
+#   Strikethrough -> Strikethrough captcha settings
+#     Enabled -> Enable strikethrough feature
+#     Random -> Randomize the characters with strikethrough
+#             effect
+Captcha:
+  Mode: 'DISABLED'
+  TimeOut: 0
+  Difficulty:
+    Length: 8
+    Letters: true
+  Strikethrough:
+    Enabled: true
+    Random: true
+
+#Encryption configuration
+# Available types:
+# "SHA512"
+# "SHA256"
+# "BCrypt"
+# "Argon2i"
+# "Argon2id"
+Encryption:
+  Passwords: 'SHA512'
+  Pin: true
+
+#Azuriom integration options
+# Restrict -> Restrict new accounts to
+#             azuriom registered accounts
+#
+# SemiPremium -> Try to use online player UUID
+Azuriom:
+  Restrict: false
+  SemiPremium: false
+
 #BurteForce options
 # Tries -> The maximum amount of tries
 #          the IP has to login per connection
@@ -93,14 +128,14 @@ BruteForce:
   Tries: 3
   BlockTime: 30
 
-#antiBot is a feature that
+#AntiBot is a feature that
 #will try to keep bots away
 #from your server by just checking
 #if the connecting player has pinged
 #the server (bots doesn't ping servers)
 AntiBot: false
 
-#allowSameIP is a feature that will
+#AllowSameIP is a feature that will
 #allow a player that is already connected
 #to join the server if his IP is the same
 #that the one is already connected.
@@ -186,13 +221,3 @@ Lang: 'en_EN'
 #For more info please visit:
 # https://rb.gy/jlmjah
 AccountSys: 'File'
-
-#The message to send when the server is
-#bungeecord mode and a player tries to
-#join directly to the spigot server,
-#without going through bungeecord,
-#he will be kicked with this message.
-#This is a method to bypass some login plugins
-#but LockLogin prevents it (Requires to LockLogin to be
-#installed in all your spigot servers to fully work)
-BungeeProxy: '&cPlease, connect through bungeecord proxy!'

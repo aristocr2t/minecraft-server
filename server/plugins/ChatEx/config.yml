@@ -46,33 +46,33 @@ show-no-players-near: true
 chat-range: 100
 logChat: false
 debug: false
-Locale: 'ru-RU'
+Locale: ru-RU
 Ads:
   Enabled: true
   Bypass:
-    - '127.0.0.1'
-    - 'my-domain.com'
+  - 127.0.0.1
+  - my-domain.com
   Log: true
   SmartManager: true
   SmartConfig:
     DomainEndings:
-      - 'com'
-      - 'net'
-      - 'org'
-      - 'de'
-      - 'icu'
-      - 'uk'
-      - 'ru'
-      - 'me'
-      - 'info'
-      - 'top'
-      - 'xyz'
-      - 'tk'
-      - 'cn'
-      - 'ga'
-      - 'cf'
-      - 'nl'
-      - 'eu'
+    - com
+    - net
+    - org
+    - de
+    - icu
+    - uk
+    - ru
+    - me
+    - info
+    - top
+    - xyz
+    - tk
+    - cn
+    - ga
+    - cf
+    - nl
+    - eu
     Multiplier: 4
     UnMultiplier: 1
   ReplaceCommas: false
@@ -84,32 +84,32 @@ AntiSpam:
   Seconds: 5
   Enable: true
 BlockedWords:
-  - '@everyone'
-  - 'fuck'
-  - 'motherfucker'
-  - 'shit'
-  - 'бляди'
-  - 'блядь'
-  - 'блять'
-  - 'гандон'
-  - 'дебил'
-  - 'долбаеб'
-  - 'долбаёб'
-  - 'дурак'
-  - 'ебало'
-  - 'ебан'
-  - 'еблан'
-  - 'ебло'
-  - 'заебал'
-  - 'лошара'
-  - 'нахуй'
-  - 'пидарас'
-  - 'пизда'
-  - 'пиздец'
-  - 'сука'
-  - 'сукин'
-  - 'урод'
-  - 'хуй'
+- '@everyone'
+- fuck
+- motherfucker
+- shit
+- бляди
+- блядь
+- блять
+- гандон
+- дебил
+- долбаеб
+- долбаёб
+- дурак
+- ебало
+- ебан
+- еблан
+- ебло
+- заебал
+- лошара
+- нахуй
+- пидарас
+- пизда
+- пиздец
+- сука
+- сукин
+- урод
+- хуй
 Tablist:
   Change: true
   format: '%prefix%player%suffix'
