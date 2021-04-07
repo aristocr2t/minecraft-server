@@ -2,7 +2,6 @@ version: '3.7'
 services:
   server:
     build: '.'
-    user: '1000:1000'
     image: '${SERVER_HOST}'
     container_name: '${SERVER_HOST}'
     command: 'java -Dfile.encoding=UTF-8 -Xmx2048M -Xms2048M -jar server.jar nogui'
