@@ -26,8 +26,15 @@ rm -rf /tmp/server
 mkdir -p /tmp/server
 cd /tmp/server
 
+git config --global --unset core.autocrlf
+
 wget -qO BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
 java -jar BuildTools.jar --rev ${SERVER_VERSION}
 
+rm -f /app/server.jar
+mv /tmp/server/spigot-${SERVER_VERSION}.jar /app/server.jar
+
 rm -rf /tmp/server
 "
+
+docker restart ${SERVER_HOST}
