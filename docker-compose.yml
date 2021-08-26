@@ -1,7 +1,11 @@
 version: '3.7'
 services:
   server:
-    build: '.'
+    build:
+      context: '.'
+      args:
+        JAVA_HOME: '${JAVA_HOME}'
+        JDK_DEB_FILE: '${JDK_DEB_FILE}'
     image: '${SERVER_HOST}'
     container_name: '${SERVER_HOST}'
     command: 'java -Dfile.encoding=UTF-8 -Xmx2048M -Xms2048M -jar server.jar nogui'

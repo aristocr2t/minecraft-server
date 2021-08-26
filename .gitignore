@@ -103,11 +103,15 @@ dist
 # TernJS port file
 .tern-port
 
+*.deb
+
 server/*
 !server/mcrcon
 !server/server.jar
 !server/server.properties
 !server/plugins/
+!server/**/*.yml
+!server/*.json
 
 server/plugins/*
 !server/plugins/*.jar
@@ -118,32 +122,27 @@ server/plugins/*
 !server/plugins/WorldGuard/
 !server/plugins/LockLogin/
 !server/plugins/Essentials/
+!server/plugins/**/*.yml
 
 server/plugins/dynmap/*
-!server/plugins/dynmap/configuration.txt
-!server/plugins/dynmap/worlds.txt
+!server/plugins/dynmap/*.txt
 
 server/plugins/ChatEx/*
 !server/plugins/ChatEx/config.yml
 !server/plugins/ChatEx/locales/
 
-server/plugins/PermissionsEx/*
-!server/plugins/PermissionsEx/config.yml
-!server/plugins/PermissionsEx/permissions.yml
+server/plugins/PermissionsEx/*.*
+!server/plugins/PermissionsEx/*.yml
 
-server/plugins/WorldEdit/*
-!server/plugins/WorldEdit/config.yml
+server/plugins/WorldEdit/*.*
+!server/plugins/WorldEdit/*.yml
 
-server/plugins/WorldGuard/*
-!server/plugins/WorldGuard/config.yml
+server/plugins/WorldGuard/**/*.*
+!server/plugins/WorldGuard/**/*.yml
 
 server/plugins/LockLogin/*
-!server/plugins/LockLogin/allowed.yml
-!server/plugins/LockLogin/config.yml
-!server/plugins/LockLogin/mysql.yml
-!server/plugins/LockLogin/spawn.yml
-!server/plugins/LockLogin/lang/
+!server/plugins/LockLogin/**/*.yml
 
 server/plugins/Essentials/*
-!server/plugins/Essentials/*.yml
+!server/plugins/Essentials/**/*.yml
 !server/plugins/Essentials/motd.txt

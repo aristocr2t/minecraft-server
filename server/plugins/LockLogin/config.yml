@@ -1,11 +1,11 @@
 ###########################################################
 #                                                         #
 #   LockLogin source is a plugin under GSA GPL license    #
-#           https://karmaconfigs.ml/license               #
+#             https://locklogin.eu/license                #
 #                                                         #
 #                                                         #
 #                   For more help                         #
-#             go to: https://rb.gy/jlmjah                 #
+#             go to: https://rb.gy/simfd2                 #
 #                                                         #
 ###########################################################
 
@@ -13,14 +13,10 @@
 #and some plugin messages
 ServerName: 'nzgshbey'
 
-#Advanced filtering:
-# Makes the console filter
-# any message that contains
-# sensitive information about
-# players (/pin, /login... )
-AdvancedFiltering: true
-
 #Registration options
+# Boss -> Shows a boss bar which health and color
+#         depends on the remaining time ( bar color requires
+#         MC 1.9+ )
 # Blind -> Applies a blind potion
 #          effect when the player
 #          joins if he's not registered
@@ -36,12 +32,16 @@ AdvancedFiltering: true
 # Max -> The maximum amount of accounts allowed
 #        TO REGISTER per IP
 Register:
+  Boss: true
   Blind: false
   Nausea: false
   TimeOut: 60
   Max: 2
 
 #Login options
+# Boss -> Shows a boss bar which health and color
+#         depends on the remaining time ( bar color requires
+#         MC 1.9+ )
 # Blind -> Applies a blind potion
 #          effect when the player
 #          joins if he's not logged in
@@ -57,10 +57,47 @@ Register:
 # MaxTries -> The maximum amount of password tries
 #             the player has before getting kicked
 Login:
+  Boss: true
   Blind: true
   Nausea: true
   TimeOut: 30
   MaxTries: 5
+
+#Toggle plugin sessions system.
+#
+# Time -> The time (in minutes) an account
+#         will be valid ( 0 = 59 seconds )
+#
+#   The maximum amount of a session life
+#   time is 30 minutes
+#This requires the player to have a
+#valid LockLogin pin configured, otherwise
+#it won't work
+Sessions:
+  Enabled: false
+  Time: 5
+
+#Toggle plugin IP health check
+# While enabled, the plugin will
+# reject incoming connections of
+# IPS with these conditions:
+#
+# - Is null or invalid
+# - Is in the plugin's proxy list
+# - Can't be resolved by the server
+IpHealthCheck: true
+
+#Validate UUIDs by generating them
+#depending on the server context
+#(online mode or offline mode)
+#This prevents an attacker from joining
+#with an spoofed UUID
+UUIDValidator: true
+
+#Hide non logged players from
+#logged ones and logged players from
+#non logged.
+HideNonLogged: false
 
 #Login/Register messages in chat
 #interval, minimum is 5, maximum is
@@ -72,13 +109,6 @@ MessagesInterval:
 
 #Captcha options
 # Available options:
-#   COMPLEX -> Requires to do /captcha <captcha> before
-#             login or register
-#   SIMPLE -> Requires to put the captcha during login
-#            and register
-#   DISABLED -> Completely disables this feature
-#              ( Not recommended, use it at your own risk )
-# TimeOut -> Set to 0 to disable
 #
 # Difficulty -> Captcha difficulty settings
 #   Length -> Captcha code length ( min is 8, max is 16 )
@@ -88,8 +118,7 @@ MessagesInterval:
 #     Random -> Randomize the characters with strikethrough
 #             effect
 Captcha:
-  Mode: 'DISABLED'
-  TimeOut: 0
+  Enabled: false
   Difficulty:
     Length: 8
     Letters: true
@@ -106,16 +135,17 @@ Captcha:
 # "Argon2id"
 Encryption:
   Passwords: 'SHA512'
-  Pin: true
+  Pins: 'SHA512'
 
-#Azuriom integration options
-# Restrict -> Restrict new accounts to
-#             azuriom registered accounts
+#Block login/register attempt when the
+#client has an insecure password, while
+#login process, the player account will be
+#unregistered ( only password ).
 #
-# SemiPremium -> Try to use online player UUID
-Azuriom:
-  Restrict: false
-  SemiPremium: false
+#While this in false, only a warning will be
+#set to the client telling him his password
+#is not safe
+BlockUnsafePasswords: true
 
 #BurteForce options
 # Tries -> The maximum amount of tries
@@ -149,6 +179,16 @@ AllowSameIp: true
 #security layer to your players accounts
 Pin: true
 
+#Enable 2FA feature (using Google Authenticator)
+#This adds and extra security layer to your
+#players account, but since due Spigot API is
+#bypasseable, you should enable PIN feature
+#For help while using/scanning 2FA QR codes
+#check these video
+#
+#https://www.youtube.com/watch?v=zcLxFQgCrnU
+2FA: true
+
 #Updater options
 # Channel -> Update system channel;
 #            Available channels:
@@ -164,27 +204,10 @@ Pin: true
 # CheckTime -> The time (in minutes) before each
 #              update check, the minimum is 5 and
 #              the maximum is 86400 (1 day)
-#
-# ChangeLog -> Enable changelog displayer in each
-#              new update found message
 Updater:
   Channel: 'RELEASE'
   Check: true
   CheckTime: 10
-
-#Enable 2FA feature (using Google Authenticator)
-#This adds and extra security layer to your
-#players account, but since due Spigot API is
-#bypasseable, you should enable PIN feature
-#For help while using/scanning 2FA QR codes
-#check these link:
-#
-# https://rb.gy/clq5ou
-# https://rb.gy/ugciij
-# This tutorial is on an iPhone
-# but the process is the same
-# on Android
-2FA: true
 
 #Spawn options
 # Manage -> Allow LockLogin to manage
@@ -212,12 +235,24 @@ AccountsPerIp: 2
 #4 chars min, 16 max, only "_" allowed
 CheckNames: true
 
+#Toggle LockLogin similar name checker.
+#While this option is true, if a player
+#called someone joins the server, another
+#player won't be able to join as SomeOne,
+#soMeoNe and so on until the original
+#someone removes his account completely.
+EnforceNameCheck: false
+
 #Plugin language
-#For more info please visit:
-# https://rb.gy/jlmjah
+#
+# Available languages are:
+# English ( en_EN | English )
+# Spanish ( es_ES | Spanish )
+# French ( fr_FR | French )
+# German ( de_DE | German )
+# Simplified Chinese ( zh_CN | Chinese simplified | Simplified chinese )
+# being english by default
 Lang: 'en_EN'
 
-#Account storage system
-#For more info please visit:
-# https://rb.gy/jlmjah
-AccountSys: 'File'
+#Module commands prefix
+ModulePrefix: '$'
