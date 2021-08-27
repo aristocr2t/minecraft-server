@@ -145,7 +145,7 @@ Encryption:
 #While this in false, only a warning will be
 #set to the client telling him his password
 #is not safe
-BlockUnsafePasswords: true
+BlockUnsafePasswords: false
 
 #BurteForce options
 # Tries -> The maximum amount of tries
@@ -187,7 +187,7 @@ Pin: true
 #check these video
 #
 #https://www.youtube.com/watch?v=zcLxFQgCrnU
-2FA: true
+2FA: false
 
 #Updater options
 # Channel -> Update system channel;
