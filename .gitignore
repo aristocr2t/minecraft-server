@@ -105,6 +105,8 @@ dist
 
 *.deb
 
+server.properties
+
 server/*
 !server/mcrcon
 !server/server.jar
