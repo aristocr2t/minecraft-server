@@ -103,12 +103,15 @@ dist
 # TernJS port file
 .tern-port
 
+.env/*
+!.env/default.env
+
 *.deb
 
 server.properties
 
 server/*
-!server/mcrcon
+!server/mcrcon*
 !server/server.jar
 !server/server.properties
 !server/plugins/
@@ -117,34 +120,61 @@ server/*
 
 server/plugins/*
 !server/plugins/*.jar
-!server/plugins/ChatEx/
-!server/plugins/dynmap/
-!server/plugins/PermissionsEx/
-!server/plugins/WorldEdit/
-!server/plugins/WorldGuard/
-!server/plugins/LockLogin/
-!server/plugins/Essentials/
 !server/plugins/**/*.yml
 
-server/plugins/dynmap/*
-!server/plugins/dynmap/*.txt
-
 server/plugins/ChatEx/*
+server/plugins/dynmap/*
+server/plugins/Essentials/*
+server/plugins/HungerGames/*
+server/plugins/LockLogin/*
+server/plugins/PermissionsEx/*.*
+server/plugins/Spleef/*
+server/plugins/TNTRun/*
+server/plugins/WorldBorder/*
+server/plugins/WorldEdit/*.*
+server/plugins/WorldGuard/**/*.*
+
+!server/plugins/ChatEx/
 !server/plugins/ChatEx/config.yml
 !server/plugins/ChatEx/locales/
 
-server/plugins/PermissionsEx/*.*
+!server/plugins/dynmap/
+!server/plugins/dynmap/*.txt
+
+!server/plugins/Essentials/
+!server/plugins/Essentials/**/*.yml
+
+!server/plugins/HungerGames/
+!server/plugins/HungerGames/arenas.yml
+!server/plugins/HungerGames/config.yml
+!server/plugins/HungerGames/items.yml
+!server/plugins/HungerGames/language.yml
+!server/plugins/HungerGames/mobs.yml
+
+!server/plugins/LockLogin/
+!server/plugins/LockLogin/**/*.yml
+!server/plugins/PermissionsEx/
 !server/plugins/PermissionsEx/*.yml
 
-server/plugins/WorldEdit/*.*
+!server/plugins/Spleef/
+!server/plugins/Spleef/config.yml
+!server/plugins/Spleef/messages.yml
+
+!server/plugins/TNTRun/
+!server/plugins/TNTRun/arenas.yml
+!server/plugins/TNTRun/config.yml
+!server/plugins/TNTRun/items.yml
+!server/plugins/TNTRun/messages.yml
+!server/plugins/TNTRun/rewards.yml
+
+!server/plugins/WorldBorder/
+!server/plugins/WorldBorder/*.yml
+
+!server/plugins/WorldEdit/
 !server/plugins/WorldEdit/*.yml
 
-server/plugins/WorldGuard/**/*.*
+!server/plugins/WorldGuard/
 !server/plugins/WorldGuard/**/*.yml
 
-server/plugins/LockLogin/*
-!server/plugins/LockLogin/**/*.yml
 
-server/plugins/Essentials/*
-!server/plugins/Essentials/**/*.yml
-!server/plugins/Essentials/motd.txt
+/tmp

@@ -1,4 +1,4 @@
-version: 3.1
+version: 3.5-beta-3
 #
 # This file contains default standard shader definitions.  The contents of this file are replaced and updated
 # during upgrades, so new or updated shader definitions should be done in the custom-shaders.txt file
@@ -193,3 +193,11 @@ shaders:
     color300: "#FFFF00"
     color1000: "#FF8000"
     color3000: "#FF0000"
+
+  # Chunk version shader (shades by version of data format)
+  - class: org.dynmap.hdmap.ChunkVersionHDShader
+    name: chunkversion
+  # Chunk status shader (shades by chunk state)
+  - class: org.dynmap.hdmap.ChunkStatusHDShader
+    name: chunkstatus
+    

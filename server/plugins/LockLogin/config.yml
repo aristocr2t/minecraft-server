@@ -1,7 +1,7 @@
 ###########################################################
 #                                                         #
-#   LockLogin source is a plugin under GSA GPL license    #
-#             https://locklogin.eu/license                #
+#   LockLogin source is a plugin under RedDo GPL license  #
+#             https://karmadev.es/license                 #
 #                                                         #
 #                                                         #
 #                   For more help                         #
@@ -11,7 +11,108 @@
 
 #This is used by 2fa
 #and some plugin messages
-ServerName: 'nzgshbey'
+ServerName: 'PixelCraft.Space'
+
+#Allow bedrock players to bypass login if
+#they already have an account on LockLogin
+BedrockLogin: false
+
+#Select whenever or not to enable global
+#accounts synchronized through LockLogin
+#web services. No extra setup is required.
+#
+# How does this affect the server?
+# - The server won't be affected in
+#   any way by this setting, whatever
+#   clients may detect some differences.
+#
+# How does this affect the client?
+# - Clients who have minecraft premium won't
+#   be asked for register if they registered in
+#   another server.
+# - Clients who have minecraft premium will
+#   have a session that lasts for 1 day. This
+#   session not only remains in your server, but
+#   all the servers running LockLogin
+GlobalAccounts: true
+
+#This will share statistics with LockLogin web services, the statistics we
+#recopilate are:
+######################
+# PLEASE NOTE: bStats option will only toggle bStats statistics, and not official ones
+######################
+#
+# - Amount of registered accounts
+# - Amount of active players
+# - Fidelity (time the plugin has been used in this server)
+# - Server address
+#
+#Any of this data will be public, except:
+# - Amount of registered accounts
+# - Amount of active players
+#
+# WARNING: plugin statistics won't work for now, so no data will be sent to LockLogin servers
+Statistics:
+  bStats: true
+  plugin: true
+
+#Account backups configuration
+#
+# NOTE: THIS OPTIONS DON'T WORK CURRENTLY
+#
+# Backup.Enable -> Enable periodical backups (A backup is always performed on server startup and server stop)
+# Backup.Max -> The maximum amount of backups. If max limit reached, the oldest backup will be removed (Leeave to 0 to disable)
+# Backup.Period -> The period to store player accounts (in minutes)
+# Backup.PurgeAfter -> The time to purge old backups (in days). Leave to 0 to disable
+Backup:
+  Enable: true
+  Max: 5
+  Period: 30
+  Purge: 7
+
+#NOT IMPLEMENTED YET
+#
+# This is the KarmaAPI panel service. When enabled, the server
+# won't store any account, instead, users will be authenticated and
+# registered using the KarmaPanel ( https://karmadev.es | https://karmaconfigs.ml | https://karmarepo.ml ).
+#
+# ( IF ANY OF THE URLS WORK, TRY WITH https://backup.[karmadev.es|karmaconfigs.ml|karmarepo.ml] )
+#
+# By enabling this you accept that player accounts won't pertain to you so you won't
+# be able to perform actions under them like requesting info about them. ( /playerinfo )
+# or removing an account. If removing an account is what you want, the user must login in any
+# of the URLs provided before and remove his account manually.
+OnlineAccounts: true
+
+#Premium configuration
+#
+# Enable -> Enable the premium feature
+# ForceUUID -> This will ensure the client uses the correct UUID.
+#              For example, on an offline mode server, the client will
+#              use his offline UUID. In an online-mode server, the client
+#              will use his online UUID
+Premium:
+  Enable: true
+  ForceUUID: true
+
+#While true, if your server is in bungeecord
+#mode. The server MOTD will be replaced with
+#This server is being protected by LockLogin
+#and/or while is being started, the motd will
+#be replaced with:
+#
+#LockLogin | Starting server
+BungeeMotd: true
+
+#This is used by LockLogin panel to
+#make sure the communication gets at least
+#encrypted
+PanelKey: ''
+
+#The communication key, leave empty to disable (not recommended)
+#
+#THIS SHOULD BE THE SAME IN ALL THE NETWORK
+BungeeKey: ''
 
 #Registration options
 # Boss -> Shows a boss bar which health and color
@@ -65,15 +166,15 @@ Login:
 
 #Toggle plugin sessions system.
 #
+# MultiSession -> Allows multiple sessions for a single player
+# Enabled -> Allow players to enable persistent sessions
 # Time -> The time (in minutes) an account
 #         will be valid ( 0 = 59 seconds )
 #
 #   The maximum amount of a session life
 #   time is 30 minutes
-#This requires the player to have a
-#valid LockLogin pin configured, otherwise
-#it won't work
 Sessions:
+  MultiSession: false
   Enabled: false
   Time: 5
 
@@ -110,6 +211,7 @@ MessagesInterval:
 #Captcha options
 # Available options:
 #
+# Enabled -> Enable/disable the captcha
 # Difficulty -> Captcha difficulty settings
 #   Length -> Captcha code length ( min is 8, max is 16 )
 #   Letters -> Include letters in the captcha
@@ -133,19 +235,75 @@ Captcha:
 # "BCrypt"
 # "Argon2i"
 # "Argon2id"
+# "AuthMeSHA"
+#
+# Encrypt: will encrypt the
+# passwords in Base64
+#
+# VirtualID: Hash the password with a
+# virtual ID to protect the player accounts
+# to brute force attacks if your user database
+# gets leaked
 Encryption:
   Passwords: 'SHA512'
   Pins: 'SHA512'
+  Encrypt: true
+  VirtualID: false
 
-#Block login/register attempt when the
-#client has an insecure password, while
-#login process, the player account will be
-#unregistered ( only password ).
+#Permissions configuration
 #
-#While this in false, only a warning will be
-#set to the client telling him his password
-#is not safe
-BlockUnsafePasswords: false
+# BlockOperator: If true, and a player had operator. The plugin will remove from him even after a successful login
+# RemoveEverything: If true, all the permissions from player will be taken, unless he is successful login
+# AllowWildcard: If false, and a player had the permission '*'. The plugin will remove from him even after a successful login
+#
+# Why you shouldn't allow OP?
+#   OP is literally pointless when having a permission plugin, unless required, OP shouldn't be granted to
+#   anyone, including server owners. If required, the correct would be grant op, do the needed tasks, and
+#   remove op.
+#
+# Why you shouldn't allow '*' wildcard?
+#   There's no problem when used in a plugin permission (example: locklogin.*), the problem is when you use it as a
+#   single permission. It grants you all the permissions (including op). Meaning you can do whatever you want. The
+#   correct permission policy would be that one that only allows permission managing from console, and only the
+#   required permission should be granted to staff members (ban, kick, warn...). WorldEdit or massive world editor
+#   plugin permissions should aso be separated in another world/server
+Permissions:
+  BlockOperator: true
+  RemoveEverything: true
+  AllowWildcard: false
+
+#Password configuration
+#
+# PrintSuccess: When warn unsafe is enabled, print success checks in green to the player
+# BlockUnsafe: Block unsafe passwords
+# WarnUnsafe: If true, all staff members with the permission
+#             locklogin.unsafe.warning will receive a message about the player used an unsafe password.
+#             If a discord webhook is also configured, a discord message will be also sent (A warning will
+#             be sent to staff only if BlockUnsafe is disabled)
+# IgnoreCommon: Ignore the list of common passwords when checking the password.
+#
+# Safety: Password general safety setting (Leave everything to 0 to disable)
+#   MinLength: The password minimum length, will be override if other password policy characters are more than
+#              the min length. For example, setting min lower letters to 10, and having min length to 6, will
+#              make min length be 10
+#
+#   Characters: The minimum amount of special characters needed in the password (Leave to 0 to disable)
+#   Numbers: The minimum amount of numbers needed in the password (Leave to 0 to disable)
+#   Letters: The minimum amount of letters
+#     Upper: The minimum amount of upper case letters needed in the password (Leave to 0 to disable)
+#     Lower: The minimum amount of lower case letters needed in the password (Leave to 0 to disable)
+Password:
+  PrintSuccess: true
+  BlockUnsafe: true
+  WarnUnsafe: true
+  IgnoreCommon: false
+  Safety:
+    MinLength: 10
+    Characters: 1
+    Numbers: 2
+    Letters:
+      Upper: 2
+      Lower: 5
 
 #BurteForce options
 # Tries -> The maximum amount of tries
@@ -157,13 +315,6 @@ BlockUnsafePasswords: false
 BruteForce:
   Tries: 3
   BlockTime: 30
-
-#AntiBot is a feature that
-#will try to keep bots away
-#from your server by just checking
-#if the connecting player has pinged
-#the server (bots doesn't ping servers)
-AntiBot: false
 
 #AllowSameIP is a feature that will
 #allow a player that is already connected
@@ -193,7 +344,7 @@ Pin: true
 # Channel -> Update system channel;
 #            Available channels:
 #            - RELEASE
-#            - RC | RELEASECANDIDATE | RELEASE_CANDIDATE
+#            - RC
 #            - SNAPSHOT
 #
 # Check -> Enable the update checker
@@ -205,7 +356,7 @@ Pin: true
 #              update check, the minimum is 5 and
 #              the maximum is 86400 (1 day)
 Updater:
-  Channel: 'RELEASE'
+  Channel: 'RELEASE' # RC
   Check: true
   CheckTime: 10
 
@@ -215,19 +366,19 @@ Updater:
 #           spawn you must use /setloginspawn
 # TakeBack -> Teleport the player back to his
 #             latest location after logging in
+# SpawnDistance -> The minimum distance required
+#                  from spawn to store the last
+#                  player location
 Spawn:
   Manage: false
   TakeBack: false
+  SpawnDistance: 30
 
 #Enable clear chat feature, this
 #option will clear ONLY CONNECTED
 #PLAYER chat, there won't be a change
 #for other players
 ClearChat: false
-
-#The maximum amount of accounts allowed
-#TO BE IN THE SERVER per IP
-AccountsPerIp: 2
 
 #Toggle LockLogin name verifier when
 #a player joins the server, using
@@ -243,16 +394,30 @@ CheckNames: true
 #someone removes his account completely.
 EnforceNameCheck: false
 
+#Define the name check mode
+#
+# 1:
+#   - The name contains letters and numbers
+#   - The name is over 3 and under 16 characters
+#   - Only _ as special character
+#   - UTF-8 characters allowed
+#
+# 2:
+#   - The name contains letters and numbers
+#   - The name is over 3 and under 16 characters
+#   - Only _ as special character
+#   - UTF-8 characters not allowed ( only ASCII )
+NameCheckProtocol: 2
+
 #Plugin language
 #
 # Available languages are:
 # English ( en_EN | English )
 # Spanish ( es_ES | Spanish )
 # French ( fr_FR | French )
-# German ( de_DE | German )
 # Simplified Chinese ( zh_CN | Chinese simplified | Simplified chinese )
 # being english by default
-Lang: 'en_EN'
+Lang: 'ru_RU'
 
 #Module commands prefix
 ModulePrefix: '$'

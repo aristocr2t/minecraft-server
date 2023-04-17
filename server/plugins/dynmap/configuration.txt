@@ -15,6 +15,10 @@
 #   The definitions of these templates are in normal-hi_boost_xhi.txt, nether-hi_boost_xhi.txt, and the_end-hi_boost_xhi.txt
 deftemplatesuffix: hires
 
+# Set default tile scale (0 = 128px x 128x, 1 = 256px x 256px, 2 = 512px x 512px, 3 = 1024px x 1024px, 4 = 2048px x 2048px) - 0 is default
+# Note: changing this value will result in all maps that use the default value being required to be fully rendered
+#defaulttilescale: 0
+
 # Map storage scheme: only uncomment one 'type' value
 #  filetree: classic and default scheme: tree of files, with all map data under the directory indicated by 'tilespath' setting
 #  sqlite: single SQLite database file (this can get VERY BIG), located at 'dbfile' setting (default is file dynmap.db in data directory)
@@ -35,11 +39,19 @@ storage:
   #userid: dynmap
   #password: dynmap
   #prefix: ""
-  #flags: "?allowReconnect=true"
+  #flags: "?allowReconnect=true&autoReconnect=true"
+  #
+  # AWS S3 backet web site
+  #type: aws_s3
+  #bucketname: "dynmap-bucket-name"
+  #region: us-east-1
+  #aws_access_key_id: "<aws-access-key-id>"
+  #aws_secret_access_key: "<aws-secret-access-key>"  
   
 components:
   - class: org.dynmap.ClientConfigurationComponent
   
+  # Remember to change the following class to org.dynmap.JsonFileClientUpdateComponent when using an external web server.
   - class: org.dynmap.InternalClientUpdateComponent
     sendhealth: false
     sendposition: true
@@ -61,7 +73,7 @@ components:
     # If set to true, users must have dynmap.webchat permission in order to chat
     webchat-permissions: false
     # Limit length of single chat messages
-    chatlengthlimit: 16
+    chatlengthlimit: 256
   #  # Optional - make players hidden when they are inside/underground/in shadows (#=light level: 0=full shadow,15=sky)
   #  hideifshadow: 4
   #  # Optional - make player hidden when they are under cover (#=sky light level,0=underground,15=open to sky)
@@ -152,10 +164,12 @@ components:
     type: playermarkers
     showplayerfaces: true
     showplayerhealth: false
-    # If true, show player body too (only valid if showplayerfaces=true
+    # If true, show player body too (only valid if showplayerfaces=true)
     showplayerbody: false
-    # Option to make player faces small - don't use with showplayerhealth
+    # Option to make player faces small - don't use with showplayerhealth or largeplayerfaces
     smallplayerfaces: false
+    # Option to make player faces larger - don't use with showplayerhealth or smallplayerfaces
+    largeplayerfaces: false
     # Optional - make player faces layer hidden by default
     hidebydefault: false
     # Optional - ordering priority in layer menu (low goes before high - default is 0)
@@ -257,7 +271,7 @@ block-alias:
 #    "minecraft:quartz_ore": "stone"
 #    "diamond_ore": "coal_ore"
   
-# Default image format for HDMaps (png, jpg, jpg-q75, jpg-q80, jpg-q85, jpg-q90, jpg-q95, jpg-q100, webp, webp-q75, webp-q80, webp-q85, webp-q90, webp-q95, webp-q100, wepb-l),
+# Default image format for HDMaps (png, jpg, jpg-q75, jpg-q80, jpg-q85, jpg-q90, jpg-q95, jpg-q100, webp, webp-q75, webp-q80, webp-q85, webp-q90, webp-q95, webp-q100, webp-l),
 # Note: any webp format requires the presence of the 'webp command line tools' (cwebp, dwebp) (https://developers.google.com/speed/webp/download)
 #
 # Has no effect on maps with explicit format settings
@@ -287,7 +301,7 @@ custom-colors-support: true
 # Control updating of player faces, once loaded (if faces are being managed by other apps or manually)
 #refreshskins: false
 
-# Customize URL used for fetching player skins (%player% is macro for name)
+# Customize URL used for fetching player skins (%player% is macro for name, %uuid% for UUID)
 skin-url: "http://skins.minecraft.net/MinecraftSkins/%player%.png"
 
 # Enable skins via SkinsRestorer plugin instead of internal legacy implementation (disabled by default)
@@ -320,6 +334,10 @@ tilespath: web/tiles
 
 # The path where the web-files are located.
 webpath: web
+
+# If set to false, disable extraction of webpath content (good if using custom web UI or 3rd party web UI)
+# Note: web interface is unsupported in this configuration - you're on your own
+update-webpath-files: true
 
 # The path were the /dynmapexp command exports OBJ ZIP files
 exportpath: export
@@ -394,6 +412,7 @@ player-sort-permission-nodes:
 #    X-Custom-Header-Of-Mine: "MyHeaderValue"
 
 # Trusted proxies for web server - which proxy addresses are trusted to supply valid X-Forwarded-For fields
+#   This now supports both IP address, and subnet ranges (e.g. 192.168.1.0/24 or 202.24.0.0/14 )
 trusted-proxies:
   - "127.0.0.1"
   - "0:0:0:0:0:0:0:1"
@@ -483,6 +502,13 @@ soft-ref-cache: true
 # Set true if new enter messages should supercede pending exit messages (vs being queued in order), default false
 #enterReplacesExits: true
 
+# Published public URL for Dynmap server (allows users to use 'dynmap url' command to get public URL usable to access server
+# If not set, 'dynmap url' will not return anything.  URL should be fully qualified (e.g. https://mc.westeroscraft.com/)
+#publicURL: http://my.greatserver.com/dynmap
+
+# Send this message if the player does not have permission to use the command
+noPermissionMsg: "You don't have permission to use this command!"
+
 # Set to true to enable verbose startup messages - can help with debugging map configuration problems
 # Set to false for a much quieter startup log
 verbose: false
@@ -499,3 +525,6 @@ dump-missing-blocks: false
 # your worlds before running with this setting enabled (set to true)
 #
 #migrate-chunks: true
+
+# Log4J defense: string substituted for attempts to use macros in web chat
+hackAttemptBlurb: "(IaM5uchA1337Haxr-Ban Me!)"

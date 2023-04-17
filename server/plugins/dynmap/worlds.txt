@@ -8,13 +8,13 @@
 worlds:
     # Worlds can be handled by templates, based on world type
     # You can override the properties of the template by specifying them in this section
-    #    for example 'Title: 'My Awesome World''
+    #    for example 'Title: "My Awesome World"'
 - name: world
   title: 'World'
   # Use 'enabled: false' to disable a certain world.
   enabled: true
   # Use sendposition: false to prevent player positions from showing when on this world (if sendposition is globally enabled)
-  sendposition: true
+  sendposition: false
   # Use sendhealth: false to prevent player health from showing when on this world (if sendhealth is globally enabled)
   sendhealth: false
   # If world isn't contiguous chunks (due to teleporting, for example), fullrender needs to be given other locations to scan for tiles on each patch of chunks
@@ -55,7 +55,7 @@ worlds:
   # World center - default is spawn point
   center:
     x: 0
-    y: 61
+    y: 64
     z: 0
   # If bigworld set to true, use alternate directory layout better suited to large worlds
   # bigworld: true
@@ -82,12 +82,26 @@ worlds:
       shader: stdtexture
       lighting: shadows
       mapzoomin: 1
+    # - class: org.dynmap.hdmap.HDMap
+    #   name: cave
+    #   title: 'Cave'
+    #   prefix: ct
+    #   perspective: iso_SE_60_lowres
+    #   shader: cave
+    #   lighting: default
+    #   mapzoomin: 3
+  #
+  # To just label world, and inherit rest from template, just provide name and title
+  #- name: world2
+  #  title: "Second World"
+  #
 - name: nether
   title: 'Nether'
   center:
     x: 0
     y: 64
     z: 0
+  # Number of extra zoom-out levels for world (each level is twice as big as the previous one)
   extrazoomout: 3
   maps:
     - class: org.dynmap.hdmap.HDMap
@@ -97,6 +111,7 @@ worlds:
       perspective: iso_S_90_lowres
       shader: stdtexture
       lighting: nethershadows
+      # Map background color (day or night)
       background: '#300806'
       mapzoomin: 1
     - class: org.dynmap.hdmap.HDMap
@@ -106,5 +121,6 @@ worlds:
       perspective: iso_SE_30_hires
       shader: stdtexture
       lighting: nethershadows
+      # Map background color (day or night)
       background: '#300806'
       mapzoomin: 1
