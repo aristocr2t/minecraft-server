@@ -118,6 +118,8 @@ server/*
 !server/**/*.yml
 !server/*.json
 
+server/usercache.json
+
 server/plugins/*
 !server/plugins/*.jar
 !server/plugins/**/*.yml
@@ -126,7 +128,7 @@ server/plugins/ChatEx/*
 server/plugins/dynmap/*
 server/plugins/Essentials/*
 server/plugins/HungerGames/*
-server/plugins/LockLogin/*
+server/plugins/LoginSecurity/*
 server/plugins/PermissionsEx/*.*
 server/plugins/Spleef/*
 server/plugins/TNTRun/*
@@ -140,9 +142,12 @@ server/plugins/WorldGuard/**/*.*
 
 !server/plugins/dynmap/
 !server/plugins/dynmap/*.txt
+server/plugins/dynmap/ids-by-ip.txt
 
 !server/plugins/Essentials/
 !server/plugins/Essentials/**/*.yml
+
+server/plugins/Essentials/upgrades-done.yml
 
 !server/plugins/HungerGames/
 !server/plugins/HungerGames/arenas.yml
@@ -151,8 +156,10 @@ server/plugins/WorldGuard/**/*.*
 !server/plugins/HungerGames/language.yml
 !server/plugins/HungerGames/mobs.yml
 
-!server/plugins/LockLogin/
-!server/plugins/LockLogin/**/*.yml
+!server/plugins/LoginSecurity/
+!server/plugins/LoginSecurity/config.yml
+!server/plugins/LoginSecurity/*_*.json
+
 !server/plugins/PermissionsEx/
 !server/plugins/PermissionsEx/*.yml
 
