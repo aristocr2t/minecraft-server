@@ -5,10 +5,9 @@ groups:
       default: true
       prefix: '&8[&7Новичок&8] &f'
     permissions:
-      - 'authme.player.*'
-      - 'betterrtp.world.world'
       - 'betterrtp.use'
-      - 'modifyworld.*'
+      - 'betterrtp.world.world'
+      - 'dynmap.show.self'
       - 'essentials.build'
       - 'essentials.delhome'
       - 'essentials.msg'
@@ -16,30 +15,33 @@ groups:
       - 'essentials.spawn'
       - 'essentials.warp'
       - 'essentials.warps.*'
-      - 'worldguard.region.claim'
-      - 'worldguard.region.remove.own.*'
-      - 'worldguard.region.addmember.own.*'
-      - 'worldguard.region.addmember.member.*'
+      - 'modifyworld.*'
+      - 'worldedit.selection.pos'
+      - 'worldedit.wand'
       - 'worldguard.region.addmember.*'
-      - 'worldguard.region.removemember.own.*'
-      - 'worldguard.region.removemember.member.*'
-      - 'worldguard.region.removemember.*'
+      - 'worldguard.region.addmember.member.*'
+      - 'worldguard.region.addmember.own.*'
+      - 'worldguard.region.claim'
+      - 'worldguard.region.info.*'
+      - 'worldguard.region.info.member.*'
+      - 'worldguard.region.info.member'
+      - 'worldguard.region.info.own'
       - 'worldguard.region.list.own'
       - 'worldguard.region.list'
-      - 'worldguard.region.info.own'
-      - 'worldguard.region.info.member'
-      - 'worldguard.region.info.member.*'
-      - 'worldguard.region.info.*'
-      - 'worldedit.wand'
-      - 'worldedit.selection.pos'
+      - 'worldguard.region.remove.own.*'
+      - 'worldguard.region.removemember.*'
+      - 'worldguard.region.removemember.member.*'
+      - 'worldguard.region.removemember.own.*'
   Vip:
     options:
       rank: '500'
       default: false
       prefix: '&8[&eСвой&8] &f'
     permissions:
-      - 'essentials.sethome'
+      - 'dynmap.hide.self'
+      - 'dynmap.show.self'
       - 'essentials.home'
+      - 'essentials.sethome'
       - 'essentials.tpa'
       - 'essentials.tpaccept'
       - 'essentials.tpdeny'
@@ -62,9 +64,9 @@ groups:
       default: false
       prefix: '&8[&9Модератор&8] &f'
     permissions:
-      - 'essentials.ptime'
-      - 'essentials.ptime.others'
       - 'essentials.kick'
+      - 'essentials.ptime.others'
+      - 'essentials.ptime'
     inheritance:
       - 'Player'
       - 'Vip'
@@ -75,12 +77,30 @@ groups:
       default: false
       prefix: '&8[&bАдминистратор&8] &f'
     permissions:
-      - 'essentials.pweather'
-      - 'essentials.pweather.others'
-      - 'essentials.ban'
+      - 'betterrtp.*' # All permissions below
+      - 'betterrtp.admin' # Use the `/rtp test/queue'` command while in debug mode!
+      - 'betterrtp.biome' # Use the `/rtp biome [biomes...]` command
+      - 'betterrtp.bypass.*' # Bypass all rtp requirements
+      - 'betterrtp.bypass.cooldown' # Bypass the cool-down timer
+      - 'betterrtp.bypass.delay' # Bypass the delay timer
+      - 'betterrtp.bypass.economy' # Bypass economy
+      - 'betterrtp.bypass.hunger' # Bypass hunger
+      - 'betterrtp.info' # Use the info command
+      - 'betterrtp.location' # Use the `/rtp location <location_name>` command
+      - 'betterrtp.player' # Use the `/rtp player <player_name> [args]` command
+      - 'betterrtp.reload' # Use the `/rtp reload` command
+      - 'betterrtp.updater' # Get notification on new updates
+      - 'betterrtp.use' # Allows the use of `/rtp` command
+      - 'betterrtp.world.*' # RTP in all enabled worlds
+      - 'betterrtp.world' # Use the `/rtp world <world_name>` command
       - 'essentials.ban.offline'
-      - 'essentials.unban'
+      - 'essentials.ban'
       - 'essentials.kill'
+      - 'essentials.pweather.others'
+      - 'essentials.pweather'
+      - 'essentials.unban'
+      # - 'betterrtp.config.<group>' # Use a specified permission group setup
+      # - 'betterrtp.world.<world>' # Ability to rtp in the specified world
     inheritance:
       - 'Player'
       - 'Vip'
