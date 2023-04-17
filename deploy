@@ -7,16 +7,16 @@ bash_ts() {
 export ENV=${ENV:-production}
 export HOST=$(hostname)
 
-for x in $(grep -v '^#' .env/default.env | sed 's| |<$--space--$>|g' | xargs -0); do
+for x in $(grep -v '^#' env/default.env | sed 's| |<$--space--$>|g' | xargs -0); do
   export "$(echo $x | sed 's|\<\$--space--\$\>| |g')"
 done
 
-if [ -f ".env/$ENV.env" ]; then
-  for x in $(grep -v '^#' .env/$ENV.env | sed 's| |<$--space--$>|g' | xargs -0); do
+if [ -f "env/$ENV.env" ]; then
+  for x in $(grep -v '^#' env/$ENV.env | sed 's| |<$--space--$>|g' | xargs -0); do
     export "$(echo $x | sed 's|\<\$--space--\$\>| |g')"
   done
 else
-  echo "File .env/$ENV.env not found"
+  echo "File env/$ENV.env not found"
   exit 1
 fi
 
