@@ -2,18 +2,14 @@
 
 rev=${1:-latest}
 
-docker() {
-  (export MSYS_NO_PATHCONV=1; "docker.exe" "$@")
-}
-
-docker run --name build_spigot -v "$PWD/tmp:/tmp" -it ubuntu:latest bash -c "
+docker run --name build_spigot -v "$PWD/tmp:/data" -it ubuntu:latest bash -c "
 apt update
 apt install -y software-properties-common
 apt-add-repository -y 'deb http://security.debian.org/debian-security stretch/updates main'
 apt update
 apt install -y wget git openjdk-20-jre-headless
 
-cd /tmp
+cd /data
 
 git config --global --unset core.autocrlf
 
