@@ -118,6 +118,7 @@ server/*
 !server/**/*.yml
 !server/*.json
 
+server/ops.json
 server/usercache.json
 
 server/plugins/*
