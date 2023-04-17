@@ -1,0 +1,25 @@
+#!/bin/bash -e
+
+rev=${1:-latest}
+
+docker() {
+  (export MSYS_NO_PATHCONV=1; "docker.exe" "$@")
+}
+
+docker run --name build_spigot -v "$PWD/tmp:/tmp" -it ubuntu:latest bash -c "
+apt update
+apt install -y software-properties-common
+apt-add-repository -y 'deb http://security.debian.org/debian-security stretch/updates main'
+apt update
+apt install -y wget git openjdk-20-jre-headless
+
+cd /tmp
+
+git config --global --unset core.autocrlf
+
+wget -qO BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+
+java -Xmx4096M -jar BuildTools.jar --rev $rev
+"
+
+cp -r $PWD/tmp/spigot-$rev.jar $PWD/server/server.jar

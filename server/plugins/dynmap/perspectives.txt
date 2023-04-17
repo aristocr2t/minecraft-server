@@ -1,4 +1,4 @@
-version: 3.1
+version: 3.5-beta-3
 #
 # This file contains default standard perspective definitions.  The contents of this file CAN need to be replaced and updated
 # during upgrades, so new or updated perspective definitions should be done in the custom-perspectives.txt file
@@ -498,4 +498,12 @@ perspectives:
     azimuth: 270
     inclination: 90
     scale: 16
+    
+  # Old style compass (sun rise in the North...)    
+  - class: org.dynmap.hdmap.IsoHDPerspective 
+    name: oldnorth
+    azimuth: 0
+    compassazimuth: 90
+    inclination: 90
+    scale: 4
     

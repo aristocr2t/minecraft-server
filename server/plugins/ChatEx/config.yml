@@ -1,3 +1,8 @@
+# Thanks for installing ChatEx
+# Please report any bugs you may encounter at my discord under:
+# https://www.thejeterlp.de/discord
+# -------------------------------Descriptions--------------------------------------
+#
 # check-for-updates: Should the plugin check for updates by itself?
 # enable-bstats: Do you want to use bstats?
 # bungeecord: If you use bungeecord, players can chat cross-server wide with the range mode (! in front of the message).
@@ -12,7 +17,8 @@
 # chat-range: The range to talk to other players. Set to -1 to enable world-wide-chat
 # logChat: Should the chat be logged?
 # debug: Should the debug log be enabled?
-# Locale: Which language do you want? (You can choose betwenn de-DE, fr-FR, pt-BR and en-EN by default.)
+# EventPriority: Choose the Eventpriority here of ChatEx. Listeners are called in following order: LOWEST -> LOW -> NORMAL -> HIGH -> HIGHEST -> MONITOR
+# Locale: Which language do you want? (You can choose betwenn de-DE, fr-FR, pt-BR, zh-CN and en-EN by default.)
 # Ads.Enabled: Should we check for ads?
 # Ads.Bypass: A list with allowed ips or domains.
 # Ads.Log: Should the ads be logged in a file?
@@ -31,13 +37,16 @@
 # Tablist.format: The format of the tablist name
 # Messages.JoinAndQuit.Enabled: Do you want to change the join and the quit messages?
 # colors: Requires 1.16+, Colors you want to use.
+# colors.$g: Default color code. &g in chat will be used with the #00ff00.
+# AfkPlaceholder.Enabled: Enable the %afk placeholder. You can use it to display AFK players on tablist. (Requires Essentials or Purpur).
+# AfkPlaceholder.format: The format of the afk placeholder.
 
 check-for-updates: true
 enable-bstats: true
 bungeecord: false
 cross_server_timeout: 3
-message-format: '%prefix%player%suffix: %message'
-global-message-format: '&9[%world] %prefix%player%suffix: &e%message'
+message-format: '%prefix%displayname%suffix: %message'
+global-message-format: '&9[%world] %prefix%displayname%suffix: &e%message'
 multi-prefixes: false
 multi-suffixes: false
 ranged-mode: false
@@ -46,6 +55,7 @@ show-no-players-near: true
 chat-range: 100
 logChat: false
 debug: false
+EventPriority: NORMAL
 Locale: ru-RU
 Ads:
   Enabled: true
@@ -116,3 +126,8 @@ Tablist:
 Messages:
   JoinAndQuit:
     Enabled: false
+colors:
+  $g: '#00ff00'
+AfkPlaceholder:
+  Enabled: false
+  format: '&r[&7AFK&r] '

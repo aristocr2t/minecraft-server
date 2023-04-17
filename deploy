@@ -1,0 +1,29 @@
+#!/bin/bash -e
+
+bash_ts() {
+  echo $(date +'%Y-%m-%d %H:%M:%S.%3N')
+}
+
+export ENV=${ENV:-production}
+export HOST=$(hostname)
+
+for x in $(grep -v '^#' .env/default.env | sed 's| |<$--space--$>|g' | xargs -0); do
+  export "$(echo $x | sed 's|\<\$--space--\$\>| |g')"
+done
+
+if [ -f ".env/$ENV.env" ]; then
+  for x in $(grep -v '^#' .env/$ENV.env | sed 's| |<$--space--$>|g' | xargs -0); do
+    export "$(echo $x | sed 's|\<\$--space--\$\>| |g')"
+  done
+else
+  echo "File .env/$ENV.env not found"
+  exit 1
+fi
+
+if [ ! "$(docker ps -aq -f name=^$SERVER_HOST$)" ]; then
+  echo "$(bash_ts) install $SERVER_HOST:$SERVER_PORT"
+  docker compose up --detach --build server
+elif [ "$(docker ps -aq -f status=exited -f name=^$SERVER_HOST$)" ]; then
+  echo "$(bash_ts) start $SERVER_HOST:$SERVER_PORT"
+  docker start "$SERVER_HOST"
+fi
