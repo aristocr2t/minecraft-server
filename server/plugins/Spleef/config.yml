@@ -1,4 +1,4 @@
-currentLang: "english"
+currentLang: english
 
 broadcastWin: true
 broadcastWinWorld: false
@@ -14,10 +14,9 @@ noScoreboard: false
 sheepBonuses: true
 diamondSpade: false
 yamlStatistics: false
-allowShowIP2: false
-allowShowIPAsked2: false
-serverIP: "nope"
-disabledCommands:
+allowShowIP2: true
+allowShowIPAsked2: true
+serverIP: nope
 checkForUpdates: true
 
 timer:
@@ -25,7 +24,7 @@ timer:
   blockStanding: 7
 
 sql:
-  tableName: "spleef"
+  tableName: spleef
 
 reward:
   win: -1

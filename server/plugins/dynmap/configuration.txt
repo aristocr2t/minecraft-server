@@ -46,11 +46,11 @@ storage:
   #bucketname: "dynmap-bucket-name"
   #region: us-east-1
   #aws_access_key_id: "<aws-access-key-id>"
-  #aws_secret_access_key: "<aws-secret-access-key>"  
-  
+  #aws_secret_access_key: "<aws-secret-access-key>"
+
 components:
   - class: org.dynmap.ClientConfigurationComponent
-  
+
   # Remember to change the following class to org.dynmap.JsonFileClientUpdateComponent when using an external web server.
   - class: org.dynmap.InternalClientUpdateComponent
     sendhealth: false
@@ -74,11 +74,11 @@ components:
     webchat-permissions: false
     # Limit length of single chat messages
     chatlengthlimit: 256
-  #  # Optional - make players hidden when they are inside/underground/in shadows (#=light level: 0=full shadow,15=sky)
-  #  hideifshadow: 4
-  #  # Optional - make player hidden when they are under cover (#=sky light level,0=underground,15=open to sky)
-  #  hideifundercover: 14
-  #  # (Optional) if true, players that are crouching/sneaking will be hidden 
+    #  # Optional - make players hidden when they are inside/underground/in shadows (#=light level: 0=full shadow,15=sky)
+    #  hideifshadow: 4
+    #  # Optional - make player hidden when they are under cover (#=sky light level,0=underground,15=open to sky)
+    #  hideifundercover: 14
+    #  # (Optional) if true, players that are crouching/sneaking will be hidden
     hideifsneaking: false
     # If true, player positions/status is protected (login with ID with dynmap.playermarkers.seeall permission required for info other than self)
     protected-player-info: false
@@ -109,12 +109,12 @@ components:
   #  chatlengthlimit: 256
   #  hide-if-invisiblity-potion: true
   #  hidenames: false
-   
+
   - class: org.dynmap.SimpleWebChatComponent
     allowchat: false
     # If true, web UI users can supply name for chat using 'playername' URL parameter.  'trustclientname' must also be set true.
     allowurlname: false
-  
+
   # Note: this component is needed for the dmarker commands, and for the Marker API to be available to other plugins
   - class: org.dynmap.MarkersComponent
     type: markers
@@ -125,25 +125,25 @@ components:
     # (optional) add spawn point markers to standard marker layer
     showspawn: true
     spawnicon: world
-    spawnlabel: "Спавн"
+    spawnlabel: 'Спавн'
     # (optional) layer for showing offline player's positions (for 'maxofflinetime' minutes after logoff)
     showofflineplayers: false
-    offlinelabel: "Оффлайн"
+    offlinelabel: 'Оффлайн'
     offlineicon: offlineuser
     offlinehidebydefault: true
     offlineminzoom: 0
     maxofflinetime: 30
     # (optional) layer for showing player's spawn beds
     showspawnbeds: false
-    spawnbedlabel: "Spawn Beds"
+    spawnbedlabel: 'Spawn Beds'
     spawnbedicon: bed
     spawnbedhidebydefault: true
     spawnbedminzoom: 0
     spawnbedformat: "%name%'s bed"
     # (optional) show world border (vanilla 1.8+)
     showworldborder: true
-    worldborderlabel: "Граница"
-    
+    worldborderlabel: 'Граница'
+
   - class: org.dynmap.ClientComponent
     type: chat
     allowurlname: false
@@ -175,13 +175,13 @@ components:
     # Optional - ordering priority in layer menu (low goes before high - default is 0)
     layerprio: 0
     # Optional - label for player marker layer (default is 'Players')
-    label: "Игроки"
-    
+    label: 'Игроки'
+
   #- class: org.dynmap.ClientComponent
   #  type: digitalclock
   - class: org.dynmap.ClientComponent
     type: link
-    
+
   - class: org.dynmap.ClientComponent
     type: timeofdayclock
     showdigitalclock: false
@@ -189,11 +189,11 @@ components:
   # Mouse pointer world coordinate display
   - class: org.dynmap.ClientComponent
     type: coord
-    label: "Местоположение"
+    label: 'Местоположение'
     hidey: false
     show-mcr: false
     show-chunk: false
-    
+
   # Note: more than one logo component can be defined
   #- class: org.dynmap.ClientComponent
   #  type: logo
@@ -208,7 +208,7 @@ components:
   #  timeout: 1800 # in seconds (1800 seconds = 30 minutes)
   #  redirecturl: inactive.html
   #  #showmessage: 'You were inactive for too long.'
-  
+
   #- class: org.dynmap.TestComponent
   #  stuff: "This is some configuration-value"
 
@@ -270,7 +270,7 @@ use-brightness-table: true
 block-alias:
 #    "minecraft:quartz_ore": "stone"
 #    "diamond_ore": "coal_ore"
-  
+
 # Default image format for HDMaps (png, jpg, jpg-q75, jpg-q80, jpg-q85, jpg-q90, jpg-q95, jpg-q100, webp, webp-q75, webp-q80, webp-q85, webp-q90, webp-q95, webp-q100, webp-l),
 # Note: any webp format requires the presence of the 'webp command line tools' (cwebp, dwebp) (https://developers.google.com/speed/webp/download)
 #
@@ -302,7 +302,7 @@ custom-colors-support: true
 #refreshskins: false
 
 # Customize URL used for fetching player skins (%player% is macro for name, %uuid% for UUID)
-skin-url: "http://skins.minecraft.net/MinecraftSkins/%player%.png"
+skin-url: 'http://skins.minecraft.net/MinecraftSkins/%player%.png'
 
 # Enable skins via SkinsRestorer plugin instead of internal legacy implementation (disabled by default)
 #skinsrestorer-integration: true
@@ -402,7 +402,7 @@ grayplayerswhenhidden: true
 # That is, anyone with first listed permission goes before anyone with second, etc, with users with none of the nodes going last
 player-sort-permission-nodes:
   - bukkit.command.op
-  
+
 # Set sidebaropened: 'true' to pin menu sidebar opened permanently, 'pinned' to default the sidebar to pinned, but allow it to unpin
 #sidebaropened: true
 
@@ -414,16 +414,16 @@ player-sort-permission-nodes:
 # Trusted proxies for web server - which proxy addresses are trusted to supply valid X-Forwarded-For fields
 #   This now supports both IP address, and subnet ranges (e.g. 192.168.1.0/24 or 202.24.0.0/14 )
 trusted-proxies:
-  - "127.0.0.1"
-  - "0:0:0:0:0:0:0:1"
-  
-# Join/quit message format for web chat: set to "" to disable notice on web UI
-joinmessage: "%playername% joined"
-quitmessage: "%playername% quit"
+  - '127.0.0.1'
+  - '0:0:0:0:0:0:0:1'
 
-spammessage: "You may only chat once every %interval% seconds."
+# Join/quit message format for web chat: set to "" to disable notice on web UI
+joinmessage: '%playername% joined'
+quitmessage: '%playername% quit'
+
+spammessage: 'You may only chat once every %interval% seconds.'
 # format for messages from web: %playername% substitutes sender ID (typically IP), %message% includes text
-webmsgformat: "&color;2[WEB] %playername%: &color;f%message%"
+webmsgformat: '&color;2[WEB] %playername%: &color;f%message%'
 
 # Control whether layer control is presented on the UI (default is true)
 showlayercontrol: true
@@ -450,37 +450,37 @@ round-coordinates: true
 
 # Messages to customize
 msg:
-    maptypes: "Map Types"
-    players: "Players"
-    chatrequireslogin: "Chat Requires Login"
-    chatnotallowed: "You are not permitted to send chat messages"
-    hiddennamejoin: "Player joined"
-    hiddennamequit: "Player quit"
+  maptypes: 'Map Types'
+  players: 'Players'
+  chatrequireslogin: 'Chat Requires Login'
+  chatnotallowed: 'You are not permitted to send chat messages'
+  hiddennamejoin: 'Player joined'
+  hiddennamequit: 'Player quit'
 
 # URL for client configuration (only need to be tailored for proxies or other non-standard configurations)
 url:
-    # configuration URL
-    #configuration: "up/configuration"
-    # update URL
-    #update: "up/world/{world}/{timestamp}"
-    # sendmessage URL
-    #sendmessage: "up/sendmessage"
-    # login URL
-    #login: "up/login"
-    # register URL
-    #register: "up/register"
-    # tiles base URL
-    #tiles: "tiles/"
-    # markers base URL
-    #markers: "tiles/"
+  # configuration URL
+  #configuration: "up/configuration"
+  # update URL
+  #update: "up/world/{world}/{timestamp}"
+  # sendmessage URL
+  #sendmessage: "up/sendmessage"
+  # login URL
+  #login: "up/login"
+  # register URL
+  #register: "up/register"
+  # tiles base URL
+  #tiles: "tiles/"
+  # markers base URL
+  #markers: "tiles/"
 
 # Customization commands - allows scripts to be run before/after certain events
 custom-commands:
-    image-updates:
-        # Command run just before any image file is written or updated: run with single parameter with fully qualified file name
-        preupdatecommand: ""
-        # Command run just after any image file is written or updated: run with single parameter with fully qualified file name
-        postupdatecommand: ""
+  image-updates:
+    # Command run just before any image file is written or updated: run with single parameter with fully qualified file name
+    preupdatecommand: ''
+    # Command run just after any image file is written or updated: run with single parameter with fully qualified file name
+    postupdatecommand: ''
 
 # Snapshot cache size, in chunks
 snapshotcachesize: 500
@@ -527,4 +527,4 @@ dump-missing-blocks: false
 #migrate-chunks: true
 
 # Log4J defense: string substituted for attempts to use macros in web chat
-hackAttemptBlurb: "(IaM5uchA1337Haxr-Ban Me!)"
+hackAttemptBlurb: '(IaM5uchA1337Haxr-Ban Me!)'
