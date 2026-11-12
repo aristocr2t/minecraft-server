@@ -1,0 +1,24 @@
+- generic [active]:
+  - generic:
+    - generic:
+      - generic:
+        - generic "Меню" [ref=e4] [cursor=pointer]
+        - generic "Список карт" [ref=e10] [cursor=pointer]
+        - generic "Список игроков" [ref=e13] [cursor=pointer]
+        - generic "День/Ночь" [ref=e19] [cursor=pointer]
+        - generic:
+          - generic "3D / Перспективная проекция" [ref=e26] [cursor=pointer]
+          - generic "Плоская / Ортографическая проекция" [ref=e29] [cursor=pointer]
+          - generic "Свободный полёт / Режим наблюдателя" [ref=e32] [cursor=pointer]
+        - generic "Сброс настроек и положения камеры" [ref=e35] [cursor=pointer]
+        - generic:
+          - generic [ref=e40]:
+            - generic [ref=e41]: "x:"
+            - spinbutton "x:" [ref=e42]: "0"
+          - generic [ref=e44]:
+            - generic [ref=e45]: "y:"
+            - spinbutton "y:" [ref=e46]: "66"
+          - generic [ref=e48]:
+            - generic [ref=e49]: "z:"
+            - spinbutton "z:" [ref=e50]: "0"
+        - generic "Компас / Указать на север" [ref=e51] [cursor=pointer]

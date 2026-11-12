@@ -1,0 +1,84 @@
+#!/bin/bash -e
+
+# метро-сетка: линии каждые STEP блоков в обе стороны на глубине y=40.
+# Тоннель 5 ширин / 3 высоты, пол из редстоун-блоков, рельсы всегда под напряжением,
+# потолок из морских фонарей, на каждом пересечении — станция.
+# Запуск: ./metro [дальность] [шаг]   (по умолчанию 10000 и 1000)
+
+EXTENT=${1:-10000}
+STEP=${2:-1000}
+SEG=1000
+
+rc() { ./rcon "$*" >/dev/null 2>&1 || true; }
+rq() { ./rcon "$*" 2>&1 | grep -v 'env/.*not found'; }
+
+echo "== сетка: $((EXTENT / STEP * 2 + 1)) линий по каждой оси, шаг $STEP, дальность $EXTENT"
+
+line_x() {
+  local z=$1 i from to
+  echo "   линия X на z=$z"
+  for ((i = -EXTENT; i < EXTENT; i += SEG)); do
+    from=$i
+    to=$((i + SEG))
+    rc "forceload add $from $((z - 16)) $to $((z + 15))"
+    rc "fill $from 40 $((z - 2)) $to 42 $((z + 2)) air"
+    rc "fill $from 39 $((z - 2)) $to 39 $((z + 2)) redstone_block"
+    rc "fill $from 43 $((z - 2)) $to 43 $((z + 2)) sea_lantern"
+    rc "fill $from 40 $((z - 3)) $to 42 $((z - 3)) polished_deepslate"
+    rc "fill $from 40 $((z + 3)) $to 42 $((z + 3)) polished_deepslate"
+    rc "fill $from 40 $z $to 40 $z powered_rail[shape=east_west]"
+    rc "forceload remove $from $((z - 16)) $to $((z + 15))"
+  done
+}
+
+line_z() {
+  local x=$1 i from to
+  echo "   линия Z на x=$x"
+  for ((i = -EXTENT; i < EXTENT; i += SEG)); do
+    from=$i
+    to=$((i + SEG))
+    rc "forceload add $((x - 16)) $from $((x + 15)) $to"
+    rc "fill $((x - 2)) 40 $from $((x + 2)) 42 $to air"
+    rc "fill $((x - 2)) 39 $from $((x + 2)) 39 $to redstone_block"
+    rc "fill $((x - 2)) 43 $from $((x + 2)) 43 $to sea_lantern"
+    rc "fill $((x - 3)) 40 $from $((x - 3)) 42 $to polished_deepslate"
+    rc "fill $((x + 3)) 40 $from $((x + 3)) 42 $to polished_deepslate"
+    rc "fill $x 40 $from $x 40 $to powered_rail[shape=north_south]"
+    rc "forceload remove $((x - 16)) $from $((x + 15)) $to"
+  done
+}
+
+# станция на пересечении: вырубает рельсы внутри, оставляя пути подходящими к платформе
+station() {
+  local x=$1 z=$2 r=$3
+  rc "fill $((x - r)) 39 $((z - r)) $((x + r)) 39 $((z + r)) polished_deepslate"
+  rc "fill $((x - r)) 40 $((z - r)) $((x + r)) 44 $((z + r)) air"
+  rc "fill $((x - r)) 45 $((z - r)) $((x + r)) 45 $((z + r)) sea_lantern"
+}
+
+# тоннели
+for ((z = -EXTENT; z <= EXTENT; z += STEP)); do line_x $z; done
+for ((x = -EXTENT; x <= EXTENT; x += STEP)); do line_z $x; done
+
+# станции на всех пересечениях, центральная — большая, с входом со спавна
+echo "== станции"
+for ((x = -EXTENT; x <= EXTENT; x += STEP)); do
+  for ((z = -EXTENT; z <= EXTENT; z += STEP)); do
+    if [ "$x" = 0 ] && [ "$z" = 0 ]; then
+      rc "forceload add -32 -32 32 32"
+      station 0 0 12
+      # вход со площади: шахта с лестницей на стене (scaffolding в 1×1 не держится и падает)
+      rc "fill 9 41 10 10 62 10 air"
+      rc "fill 9 41 10 9 62 10 ladder[facing=east]"
+      rc "fill 8 63 9 11 63 11 polished_deepslate"
+      rc "fill 9 63 10 10 63 10 air"
+      rc "forceload remove -32 -32 32 32"
+    else
+      rc "forceload add $((x - 16)) $((z - 16)) $((x + 16)) $((z + 16))"
+      station "$x" "$z" 7
+      rc "forceload remove $((x - 16)) $((z - 16)) $((x + 16)) $((z + 16))"
+    fi
+  done
+done
+
+echo "== готово: сетка $STEP × $STEP в пределах ±$EXTENT, y=40, вход в метро (10 63 10)"
