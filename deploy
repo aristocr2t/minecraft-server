@@ -19,6 +19,12 @@ else
   echo "$(bash_ts) env/$ENV.env not found, using env/default.env"
 fi
 
+# worldgen-датапаки (Tectonic) должны лежать до создания мира
+if [ -d datapacks ]; then
+  sudo -n mkdir -p server/world/datapacks 2>/dev/null || mkdir -p server/world/datapacks
+  sudo -n cp -f datapacks/*.zip server/world/datapacks/ 2>/dev/null || cp -f datapacks/*.zip server/world/datapacks/
+fi
+
 if [ ! "$(docker ps -aq -f name=^$SERVER_HOST$)" ]; then
   echo "$(bash_ts) install $SERVER_HOST:$SERVER_PORT"
   docker compose up --detach --build server
