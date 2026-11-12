@@ -95,6 +95,8 @@ for i in -16 0 16; do
 done
 
 rc "minecraft:scoreboard objectives remove y"
+# здоровье само не восстанавливается, только еда/зелья — мир сложный, но смерть не окончательная
+rc "gamerule naturalRegeneration false"
 rc "gamerule spawnRadius 2"
 rc "setworldspawn 0 $((y+2)) 0"
 rc "forceload remove -16 -16 16 16"

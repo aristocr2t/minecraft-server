@@ -55,6 +55,10 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 
 VIP выдаётся руками: `./rcon "lp user <ник> parent add vip"`.
 
+Сложность: `difficulty=hard`, `hardcore=false` (смерть не окончательная), `naturalRegeneration=false`
+(здоровье только едой и зельями), вещи после смерти теряются, телепортов нет — весь мир проходится ногами.
+Любой из пунктов откатывается одной командой: `./rcon "gamerule naturalRegeneration true"`.
+
 Как сделать водяной портал (Advanced Portals, блок-триггер = вода):
 1. получить топор: `/portal selector`;
 2. построить рамку и залить её водой;
