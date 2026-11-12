@@ -24,7 +24,7 @@ echo "== телепортов нет ни у кого, у vip только ве�
 
 echo "== водяные порталы: vip и played24h"
 for g in vip played24h; do
-  for p in portal portal.use portal.create portal.selector portal.list desti desti.teleport; do
+  for p in portal portal.use portal.create portal.selector portal.list; do
     rc "lp group $g permission set advancedportals.$p true"
   done
 done
