@@ -30,6 +30,11 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 | SkinsRestorer 15.12.6 | скины игроков в offline-режиме |
 | WorldEdit 7.4.6 / WorldGuard 7.0.21 | стройка и защита регионов |
 | Chunky 1.5.66 | предгенерация чанков: `chunky radius 2000`, затем `chunky start` |
+| SeasonsPlus 1.4.2 | сезоны и температура тела: перегрев/переохлаждение, зимой стражи, летом без дождя |
+| BoatRacing 26.2.2 | гонки на лодках по льду, трассы и лидерборды |
+| Dragon Egg Respawns 1.1.0 | новое яйцо дракона после каждого убийства |
+| DragonEgg 3.1.0 | яйцо можно оживить и вырастить дракона |
+| EvenMoreFish 2.5.3 + EMFFishStew 1.0.3 | соревновательная рыбалка и турниры |
 | HungerGames 1.2 | классические голодные игры: `/hg arena ...` |
 | RoundHaven 0.12.0 | ивенты в отдельном мире: `/rh` — Spleef, Sumo, Archer Rush, Chaos; инвентари игроков сохраняются и возвращаются |
 | Simple Voice Chat 2.6.27 | проксимити-голос, нужен мод у клиента |
@@ -42,6 +47,12 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 Деньги единые: UJobs платит через Vault, EssentialsC хранит баланс (`/bal`) и продаёт в `/shop`.
 Стартовый капитал новичкам — `eco` / настройка `starting-balance` в `server/plugins/EssentialsC/config.yml`.
 Цены и список работ — `server/plugins/UJobs/jobs.yml`, магазин — `server/plugins/EssentialsC/shop/*.yml`.
+
+## рельеф: Tectonic
+
+`datapacks/tectonic-datapack-3.0.29.zip` — worldgen-датапак: высокие каньоны, реки с водопадами.
+`./deploy` копирует `datapacks/*.zip` в `server/world/datapacks/` перед стартом, иначе новая карта
+создастся без него. Датапак применяется только к новым чанкам, менять его на живой карте бессмысленно.
 
 ## хардкор: телепорты и водяные порталы
 
