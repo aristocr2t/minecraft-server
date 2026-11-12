@@ -1,10 +1,9 @@
-FROM ubuntu:latest
+FROM eclipse-temurin:25-jre
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
   git \
   curl \
-  libasound2 \
-  openjdk-17-jre-headless
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /server/
 

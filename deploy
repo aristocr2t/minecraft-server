@@ -16,8 +16,7 @@ if [ -f "env/$ENV.env" ]; then
     export "$(echo $x | sed 's|\<\$--space--\$\>| |g')"
   done
 else
-  echo "File env/$ENV.env not found"
-  exit 1
+  echo "$(bash_ts) env/$ENV.env not found, using env/default.env"
 fi
 
 if [ ! "$(docker ps -aq -f name=^$SERVER_HOST$)" ]; then
