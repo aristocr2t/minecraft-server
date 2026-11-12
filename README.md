@@ -7,6 +7,7 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 1. `./build-server` — скачать свежий Paper 26.3 в `server/server.jar` (уже в репозитории).
 2. `echo "eula=true" > server/eula.txt` — один раз, если файла нет (Mojang EULA).
 3. `./deploy` — собрать образ и поднять контейнер. Переменные берутся из `env/default.env`, поверх — из `env/$ENV.env` (не обязателен).
+4. `./setup` — один раз после первого запуска: группы прав и спавн на 0 0 (см. ниже).
 
 Порты: 25565/tcp — игра, 8100/tcp — 3D-карта, 24454/udp — голосовой чат.
 
@@ -22,7 +23,9 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 | VaultUnlocked 2.20.3 | мост экономики между плагинами (Vault API) |
 | EssentialsC 4.3.5 | home/tpa/warp/kit, `/bal`, `/pay`, `/shop` (магазин всех предметов), `/ah` (аукцион) |
 | UJobs 1.0.8 | 13 работ: копай/фарми/охоться/рыбачь — деньги и опыт капают автоматически |
-| LuckPerms 5.5.71 | права и группы |
+| LuckPerms 5.5.71 | права и группы (storage yaml, файлы в git) |
+| Advanced Portals 2.8.0 | водяные порталы: блок-триггер `WATER`, права у vip и played24h |
+| PlaytimeReward 1.0 | через 24 часа игры выдаёт группу `played24h` |
 | AuthMe 6.0.1 | пароли на offline-сервере (`online-mode=false`) |
 | SkinsRestorer 15.12.6 | скины игроков в offline-режиме |
 | WorldEdit 7.4.6 / WorldGuard 7.0.21 | стройка и защита регионов |
@@ -39,6 +42,33 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 Деньги единые: UJobs платит через Vault, EssentialsC хранит баланс (`/bal`) и продаёт в `/shop`.
 Стартовый капитал новичкам — `eco` / настройка `starting-balance` в `server/plugins/EssentialsC/config.yml`.
 Цены и список работ — `server/plugins/UJobs/jobs.yml`, магазин — `server/plugins/EssentialsC/shop/*.yml`.
+
+## хардкор: телепорты и водяные порталы
+
+Правила задаёт `./setup` (идемпотентен, но спавн строит один раз — на чистом мире):
+
+| группа | что может |
+| --- | --- |
+| `default` (все) | никаких телепортов: `/tpa`, `/home`, `/spawn`, `/warp`, `/back`, `/rtp` выключены |
+| `played24h` | + водяные порталы (выдаётся автоматически после 24 часов игры, PlaytimeReward) |
+| `vip` | + телепорты (`/tpa`, `/home`, `/spawn`, `/warp`, `/back`) и водяные порталы |
+
+VIP выдаётся руками: `./rcon "lp user <ник> parent add vip"`.
+
+Как сделать водяной портал (Advanced Portals, блок-триггер = вода):
+1. получить топор: `/portal selector`;
+2. построить рамку и залить её водой;
+3. выделить рамку топором и создать портал: `/portal create <имя> <destination>`;
+4. точки назначения делает админ: `/desti create <имя>` (стоя на месте), `/desti list`.
+
+Права LuckPerms лежат в `server/plugins/LuckPerms/yaml-storage/` (storage = yaml),
+плагинные — в `server/plugins/AdvancedPortals/config.yaml` и `server/plugins/PlaytimeReward/config.yml`.
+
+## спавн
+
+`./setup` находит поверхность на 0 0 и строит площадь 49×49: плита, стены по периметру,
+4 башни с фонарями, 4 фонтана, дорожки к центру и подиум. Точка возрождения — `0 y 0`,
+`spawnRadius 2`, зона защищена `spawn-protection` из `server.properties`.
 
 ## мини-игры
 

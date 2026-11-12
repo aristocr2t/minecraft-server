@@ -125,6 +125,14 @@ server/*
 server/plugins/*
 !server/plugins/*.jar
 
+# конфиги, которые должны быть в репозитории
+!server/plugins/AdvancedPortals/
+!server/plugins/AdvancedPortals/config.yaml
+!server/plugins/PlaytimeReward/
+!server/plugins/PlaytimeReward/config.yml
+!server/plugins/LuckPerms/
+!server/plugins/LuckPerms/config.yml
+
 # BlueMap needs accept-download: true or it refuses to render
 !server/plugins/BlueMap/
 !server/plugins/BlueMap/core.conf

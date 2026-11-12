@@ -1,0 +1,102 @@
+#!/bin/bash -e
+
+# хардкор-настройка: телепорты только VIP, водяные порталы VIP и тем, кто отыграл 24ч+,
+# спавн строится на 0 0. Запускать после ./deploy. Идемпотентен.
+
+rc() { ./rcon "$*" >/dev/null 2>&1 || true; }
+rq() { ./rcon "$*" 2>&1 | grep -v 'env/.*not found'; }
+
+echo "== группы LuckPerms"
+rc "lp creategroup vip"
+rc "lp creategroup played24h"
+rc "lp group vip setweight 100"
+rc "lp group played24h setweight 50"
+rc "lp group vip parent add default"
+rc "lp group played24h parent add default"
+
+echo "== default: никаких телепортов"
+for p in tpa tpahere tpaccept tpdeny tpcancel tpatoggle tphere home sethome delhome homes \
+  spawn warp warps back dback rtp; do
+  rc "lp group default permission set essentialsc.$p false"
+done
+
+echo "== vip: телепорты"
+for p in tpa tpahere tpaccept tpdeny tpcancel tpatoggle home sethome delhome homes \
+  spawn warp warps back dback; do
+  rc "lp group vip permission set essentialsc.$p true"
+done
+
+echo "== водяные порталы: vip и played24h"
+for g in vip played24h; do
+  for p in portal portal.use portal.create portal.selector portal.list desti desti.teleport; do
+    rc "lp group $g permission set advancedportals.$p true"
+  done
+done
+
+echo "== ищем поверхность на 0 0"
+rc "forceload add -16 -16 16 16"
+rc "minecraft:scoreboard objectives add y dummy"
+
+air() {
+  rc "minecraft:scoreboard players set probe y 0"
+  rc "execute positioned 0 $1 0 if block ~ ~ ~ air run minecraft:scoreboard players add probe y 1"
+  rq "minecraft:scoreboard players get probe y" | grep -q 'probe has 1'
+}
+
+lo=40
+hi=200
+while [ $((hi - lo)) -gt 1 ]; do
+  mid=$(((lo + hi) / 2))
+  if air "$mid"; then hi=$mid; else lo=$mid; fi
+done
+y=$lo
+echo "== спавн на 0 0, поверхность y=$y"
+
+rc "fill -24 $((y-4)) -24 24 $y 24 stone_bricks"
+rc "fill -24 $((y+1)) -24 24 $((y+10)) 24 air"
+rc "fill -24 $((y+11)) -24 24 $((y+20)) 24 air"
+rc "fill -24 $((y+21)) -24 24 $((y+30)) 24 air"
+
+# центральный подиум и дорожки
+rc "fill -6 $((y+1)) -6 6 $((y+1)) 6 smooth_stone"
+rc "fill -1 $((y+1)) -23 1 $((y+1)) -7 smooth_quartz"
+rc "fill -1 $((y+1)) 7 1 $((y+1)) 23 smooth_quartz"
+rc "fill -23 $((y+1)) -1 -7 $((y+1)) 1 smooth_quartz"
+rc "fill 7 $((y+1)) -1 23 $((y+1)) 1 smooth_quartz"
+
+# стены по периметру
+rc "fill -24 $((y+1)) -24 24 $((y+2)) -23 polished_deepslate"
+rc "fill -24 $((y+1)) 23 24 $((y+2)) 24 polished_deepslate"
+rc "fill -24 $((y+1)) -23 -23 $((y+2)) 23 polished_deepslate"
+rc "fill 23 $((y+1)) -23 24 $((y+2)) 23 polished_deepslate"
+
+# башни по углам
+for x in -19 16; do
+  for z in -19 16; do
+    rc "fill $x $((y+1)) $z $((x+3)) $((y+5)) $((z+3)) stone_bricks"
+    rc "fill $((x+1)) $((y+6)) $((z+1)) $((x+2)) $((y+6)) $((z+2)) sea_lantern"
+  done
+done
+
+# фонтаны
+for x in -14 11; do
+  for z in -14 11; do
+    rc "fill $x $((y+1)) $z $((x+3)) $((y+1)) $((z+3)) stone_bricks"
+    rc "fill $((x+1)) $((y+1)) $((z+1)) $((x+2)) $((y+1)) $((z+2)) water"
+  done
+done
+
+# свет по стенам
+for i in -16 0 16; do
+  rc "setblock $i $((y+3)) -23 sea_lantern"
+  rc "setblock $i $((y+3)) 24 sea_lantern"
+  rc "setblock -23 $((y+3)) $i sea_lantern"
+  rc "setblock 24 $((y+3)) $i sea_lantern"
+done
+
+rc "minecraft:scoreboard objectives remove y"
+rc "gamerule spawnRadius 2"
+rc "setworldspawn 0 $((y+2)) 0"
+rc "forceload remove -16 -16 16 16"
+
+echo "== готово: спавн 0 $((y+2)) 0; VIP: ./rcon \"lp user <ник> parent add vip\""

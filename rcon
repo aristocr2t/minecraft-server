@@ -11,8 +11,13 @@ if [ -f "env/$ENV.env" ]; then
     export "$(echo $x | sed 's|\<\$--space--\$\>| |g')"
   done
 else
-  echo "File env/$ENV.env not found"
-  exit 1
+  echo "File env/$ENV.env not found, using env/default.env"
 fi
 
-docker exec -it "$SERVER_HOST" bash -c "./mcrcon-$(uname -m) -p ***"
+bin="./mcrcon-$(uname -m)"
+
+if [ $# -eq 0 ]; then
+  docker exec -it "$SERVER_HOST" "$bin" -p ***
+else
+  docker exec -i "$SERVER_HOST" "$bin" -p *** "$@"
+fi

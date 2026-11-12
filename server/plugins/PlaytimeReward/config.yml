@@ -1,0 +1,13 @@
+# каждые 24 часа игры выдаём группу с правом строить водяные порталы
+intervalMinutes: 1440
+
+# Vault/портал не нужен: просто добавляем в LuckPerms-группу, повторное добавление безопасно
+command: "lp user %player% parent add played24h"
+
+# CONSOLE — чтобы игрок не мог выдать себе группу сам
+runAs: "CONSOLE"
+
+runOnJoin: false
+
+# пусто = считается у всех игроков
+requiredPermission: ""
