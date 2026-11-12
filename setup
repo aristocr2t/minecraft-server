@@ -92,9 +92,12 @@ done
 
 rc "minecraft:scoreboard objectives remove y"
 # здоровье само не восстанавливается, только еда/зелья — мир сложный, но смерть не окончательная
-rc "gamerule naturalRegeneration false"
-rc "gamerule spawnRadius 2"
+rc "gamerule natural_health_regeneration false"
+rc "gamerule respawn_radius 2"
 rc "setworldspawn 0 $((y+2)) 0"
 rc "forceload remove -16 -16 16 16"
+
+rq "gamerule natural_health_regeneration"
+rq "gamerule respawn_radius"
 
 echo "== готово: спавн 0 $((y+2)) 0; VIP: ./rcon \"lp user <ник> parent add vip\""
