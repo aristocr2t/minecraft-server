@@ -20,11 +20,7 @@ for p in tpa tpahere tpaccept tpdeny tpcancel tpatoggle tphere home sethome delh
   rc "lp group default permission set essentialsc.$p false"
 done
 
-echo "== vip: телепорты"
-for p in tpa tpahere tpaccept tpdeny tpcancel tpatoggle home sethome delhome homes \
-  spawn warp warps back dback; do
-  rc "lp group vip permission set essentialsc.$p true"
-done
+echo "== телепортов нет ни у кого, у vip только вес и порталы"
 
 echo "== водяные порталы: vip и played24h"
 for g in vip played24h; do
