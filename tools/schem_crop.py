@@ -17,6 +17,7 @@ s2n = importlib.util.module_from_spec(spec); spec.loader.exec_module(s2n)
 
 SRC, OUT, TILE = sys.argv[1], sys.argv[2], int(sys.argv[3])
 X1, Z1, X2, Z2, YMIN = (int(v) for v in sys.argv[4:9])
+ROT = int(sys.argv[9]) if len(sys.argv) > 9 else 0   # 90 = против часовой стрелки
 
 sch = s2n.read_nbt(SRC)['Schematic']
 W, H, L = sch['Width'], sch['Height'], sch['Length']
@@ -41,6 +42,11 @@ for idx, pidx in enumerate(vals):
     ry, rem = divmod(idx, W * L); rz, rx = divmod(rem, W)
     wx, wz, wy = rx + SCH_X0, rz + SCH_Z0, ry + SCH_Y0
     if not (X1 <= wx <= X2 and Z1 <= wz <= Z2): continue
+    if ROT == 90:
+        # поворот против часовой стрелки вокруг центра выреза
+        cx, cz = (X1 + X2) / 2.0, (Z1 + Z2) / 2.0
+        dx, dz = wx - cx, wz - cz
+        wx, wz = int(round(cx + dz)), int(round(cz - dx))
     if wy < YMIN: continue
     if '[' in key:
         name, props = key[:key.index('[')], key[key.index('[') + 1:-1]
