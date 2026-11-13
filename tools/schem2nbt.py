@@ -177,6 +177,21 @@ def main():
         cmds.append('spawn:%s %d %d %d' % (name, minx + x0, miny, minz + z0))
     with open(os.path.join(outdir, 'place.txt'), 'w') as f:
         f.write('\n'.join(cmds) + '\n')
+    # рамки тайлов: нужны, чтобы вычистить рельеф внутри построек перед вставкой
+    boxes = []
+    for (tx, tz), items in sorted(tiles.items()):
+        xs = [i[0] for i in items]; zs = [i[2] for i in items]
+        boxes.append((min(xs) + x0, min(zs) + z0, max(xs) + x0, max(zs) + z0))
+    with open(os.path.join(outdir, 'boxes.txt'), 'w') as f:
+        for (a, b, c, d) in boxes:
+            f.write('%d %d %d %d\n' % (a, b, c, d))
+    fill_lines = []
+    for (a, b, c, d) in boxes:
+        for y in range(0, H, 7):
+            fill_lines.append('%d %d %d %d %d %d' % (a, b, c, d, y, min(y + 6, H - 1)))
+    with open(os.path.join(outdir, 'clear.txt'), 'w') as f:
+        f.write('\n'.join(fill_lines) + '\n')
+    print('clear-команд: %d' % len(fill_lines))
     print('размер %dx%dx%d, тайлов %d, блоков %d (без воздуха), файл пака: %s' % (W, H, L, len(tiles), total, packdir))
 
 if __name__ == '__main__':
