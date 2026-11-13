@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Снимок мира: ./snapshot [метка]
+# Делает save-all flush и упаковывает server/world в /home/master/backups/mc.
+set -euo pipefail
+cd "$(dirname "$0")"
+
+label="${1:-}"
+dest="${MC_BACKUP_DIR:-/home/master/backups/mc}"
+name="world-$(date +%Y%m%d-%H%M%S)${label:+-$label}.tar.gz"
+
+mkdir -p "$dest"
+./rcon "save-all flush" >/dev/null 2>&1 || echo "warning: rcon недоступен, снимаю как есть" >&2
+tar -C server -czf "$dest/$name" world
+echo "$dest/$name"
+du -h "$dest/$name"
