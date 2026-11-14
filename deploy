@@ -26,23 +26,27 @@ else
   echo "$(bash_ts) env/$ENV.env not found, using env/default.env"
 fi
 
+# файлы в server/ созданы контейнером от root — без sudo их не перезаписать
+SUDO=""
+if sudo -n true 2>/dev/null; then SUDO=sudo; fi
+
 # worldgen-датапаки (Tectonic) должны лежать до создания мира
 if [ -d datapacks ]; then
-  mkdir -p server/world/datapacks
-  cp -f datapacks/*.zip server/world/datapacks/
+  $SUDO mkdir -p server/world/datapacks
+  $SUDO cp -f datapacks/*.zip server/world/datapacks/
 fi
 
 # Mojang EULA: без файла сервер не стартует вообще
 if [ ! -f server/eula.txt ]; then
-  echo "eula=true" >server/eula.txt
+  echo "eula=true" | $SUDO tee server/eula.txt >/dev/null
   echo "$(bash_ts) создал server/eula.txt (eula=true)"
 fi
 
 # --- overlay: наши конфиги (единственное место, где они версионируются) ---
 if [ -d overlay/server ]; then
   echo "$(bash_ts) overlay → server/"
-  cp -R overlay/server/. server/
-  rm -f server/server.properties.tpl
+  $SUDO cp -R overlay/server/. server/
+  $SUDO rm -f server/server.properties.tpl
 
   : "${RCON_PASSWORD:?RCON_PASSWORD не задан: создай env/$ENV.env по образцу env/production.env.example}"
   tmp=$(mktemp)
@@ -57,9 +61,9 @@ if [ -d overlay/server ]; then
     rm -f "$tmp"
   else
     if [ -f server/server.properties ]; then
-      cp -p server/server.properties "server/server.properties.bak-$(date +%s)"
+      $SUDO cp -p server/server.properties "server/server.properties.bak-$(date +%s)"
     fi
-    mv "$tmp" server/server.properties
+    $SUDO mv "$tmp" server/server.properties
     echo "$(bash_ts) server.properties из overlay/server/server.properties.tpl"
   fi
 else
