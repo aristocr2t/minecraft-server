@@ -46,6 +46,7 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
     private final Map<UUID, BossBar> bars = new HashMap<>();
     private final Map<UUID, Integer> outsideTicks = new HashMap<>();
     private final Map<UUID, Integer> illnessTicks = new HashMap<>();
+    private final Map<UUID, Long> illnessUntil = new HashMap<>();
     private final Map<UUID, Integer> damageClock = new HashMap<>();
 
     private final List<State> states = new ArrayList<>();
@@ -274,21 +275,50 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             return;
         }
         outsideTicks.remove(id);
-        int cooldown = illnessTicks.getOrDefault(id, 0);
-        if (cooldown > 0) {
-            illnessTicks.put(id, cooldown - 1);
-            return;
-        }
-        illnessTicks.put(id, cfg.getInt("duration", 15));
-        int duration = Math.max(20, cfg.getInt("duration", 15) * 20);
+        giveIllness(player, cfg.getInt("duration", 3), "вы заболели: ложитесь на кровать, ешьте, пейте воды");
+    }
+
+    /** Вешает болезнь: длится днями, лечится только отдыхом и случайно. */
+    private void giveIllness(Player player, int days, String message) {
+        int ticks = Math.max(1, days) * 24000;
         for (String entry : List.of("NAUSEA:0", "WEAKNESS:0", "HUNGER:0")) {
             String[] parts = entry.split(":");
             PotionEffectType type = effectType(parts[0]);
             if (type != null) {
-                player.addPotionEffect(new PotionEffect(type, duration, Integer.parseInt(parts[1]), true, false, true));
+                player.addPotionEffect(new PotionEffect(type, ticks, Integer.parseInt(parts[1]), true, false, true));
             }
         }
-        player.sendActionBar(Component.text("вы заболели: отдохните, поешьте, попейте воды"));
+        illnessUntil.put(player.getUniqueId(), System.currentTimeMillis() + ticks * 50L);
+        player.sendActionBar(Component.text(message));
+    }
+
+    /** Лечение: только в постели. Ночью шанс выше, днём — просто лежишь, шанс вдвое меньше. */
+    private void cureIllness(Player player, ConfigurationSection cfg) {
+        if (!player.hasPotionEffect(PotionEffectType.NAUSEA)) {
+            return;
+        }
+        long until = illnessUntil.getOrDefault(player.getUniqueId(), 0L);
+        if (System.currentTimeMillis() < until) {
+            return; // минимальная длительность болезни
+        }
+        boolean night = player.getWorld().getTime() >= 12541 && player.getWorld().getTime() < 23458;
+        double chance = cfg.getDouble("cure-chance-night", 0.4) * (night ? 1.0 : 0.5);
+        if (Math.random() < chance) {
+            cure(player);
+        }
+    }
+
+    /** Мгновенное лечение: снимает болезнь и обнуляет таймеры. */
+    private void cure(Player player) {
+        for (String name : List.of("NAUSEA", "WEAKNESS", "HUNGER")) {
+            PotionEffectType type = effectType(name);
+            if (type != null) {
+                player.removePotionEffect(type);
+            }
+        }
+        illnessUntil.remove(player.getUniqueId());
+        outsideTicks.remove(player.getUniqueId());
+        player.sendActionBar(Component.text("вы выздоровели"));
     }
 
     private void updateBar(Player player, double value, State state, FileConfiguration cfg) {
