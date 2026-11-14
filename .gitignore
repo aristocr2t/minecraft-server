@@ -111,11 +111,11 @@ dist
 *.deb
 
 server.properties
+server/server.properties
 
 server/*
 !server/mcrcon*
 !server/server.jar
-!server/server.properties
 !server/banned-ips.json
 !server/banned-players.json
 !server/whitelist.json
