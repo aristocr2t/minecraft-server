@@ -115,15 +115,16 @@ server/server.properties
 
 server/*
 !server/mcrcon*
-!server/server.jar
 !server/banned-ips.json
 !server/banned-players.json
 !server/whitelist.json
 !server/plugins/
 
-# plugin jars are versioned, their generated configs and data are not
+# jar'ы не версионируются: server.jar -> ./build-server, плагины -> ./build-plugins (plugins.txt)
+*.jar
+
+# конфиги и данные плагинов генерируются при первом запуске
 server/plugins/*
-!server/plugins/*.jar
 
 # конфиги, которые должны быть в репозитории
 !server/plugins/AdvancedPortals/

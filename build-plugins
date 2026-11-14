@@ -1,0 +1,34 @@
+#!/bin/bash -e
+
+# скачивает плагины из plugins.txt (Modrinth) в server/plugins
+
+cd "$(dirname "$0")"
+dest=${1:-server/plugins}
+mkdir -p "$dest"
+
+while read -r slug ver file rest; do
+  case "$slug" in
+    '' | '#'*) continue ;;
+  esac
+
+  if [ "$slug" = manual ]; then
+    echo "manual: $ver — $file $rest"
+    continue
+  fi
+
+  url=$(curl -sf -H 'User-Agent: minecraft-server-build-plugins/1' \
+    "https://api.modrinth.com/v2/project/$slug/version?game_versions=%5B%2226.3%22%5D&loaders=%5B%22paper%22%5D" |
+    VER="$ver" python3 -c '
+import json, os, sys
+want = os.environ["VER"]
+vs = json.load(sys.stdin) or []
+if not any(v["version_number"] == want for v in vs):
+    print("warn: %s not in Modrinth list, taking newest" % want, file=sys.stderr)
+pick = [v for v in vs if v["version_number"] == want] or vs
+if not pick:
+    sys.exit("no versions for " + want)
+print(pick[0]["files"][0]["url"])')
+
+  echo "→ $file"
+  curl -sfL "$url" -o "$dest/$file"
+done < plugins.txt

@@ -15,9 +15,10 @@ else
 fi
 
 bin="./mcrcon-$(uname -m)"
+: "${RCON_PASSWORD:?RCON_PASSWORD is not set: add it to env/production.env}"
 
 if [ $# -eq 0 ]; then
-  docker exec -it "$SERVER_HOST" "$bin" -p ***
+  docker exec -it "$SERVER_HOST" "$bin" -p "$RCON_PASSWORD"
 else
-  docker exec -i "$SERVER_HOST" "$bin" -p *** "$@"
+  docker exec -i "$SERVER_HOST" "$bin" -p "$RCON_PASSWORD" "$@"
 fi

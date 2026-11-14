@@ -6,16 +6,17 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 
 ## deploy
 
-1. `./build-server` — скачать свежий Paper 26.3 в `server/server.jar` (уже в репозитории).
-2. `echo "eula=true" > server/eula.txt` — один раз, если файла нет (Mojang EULA).
-3. `./deploy` — собрать образ и поднять контейнер. Переменные берутся из `env/default.env`, поверх — из `env/$ENV.env` (не обязателен).
-4. `./setup` — один раз после первого запуска: группы прав и спавн на 0 0 (см. ниже).
+1. `./build-server` — скачать свежий Paper 26.3 в `server/server.jar` (бинарник в git не хранится).
+2. `./build-plugins` — скачать плагины из `plugins.txt` (Modrinth) в `server/plugins`.
+3. `echo "eula=true" > server/eula.txt` — один раз, если файла нет (Mojang EULA).
+4. `./deploy` — собрать образ и поднять контейнер. Переменные берутся из `env/default.env`, поверх — из `env/$ENV.env` (не обязателен).
+5. `./setup` — один раз после первого запуска: группы прав и спавн на 0 0 (см. ниже).
 
 Порты: 25565/tcp — игра, 8100/tcp — 3D-карта, 24454/udp — голосовой чат.
 
 ## rcon
 
-`./rcon` (пароль `mcrcon`, порт 25575, наружу не публикуется).
+`./rcon` (пароль берётся из `env/production.env` → `RCON_PASSWORD`, порт 25575, наружу не публикуется).
 
 ## плагины (server/plugins)
 
@@ -41,7 +42,8 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 | RoundHaven 0.12.0 | ивенты в отдельном мире: `/rh` — Spleef, Sumo, Archer Rush, Chaos; инвентари игроков сохраняются и возвращаются |
 | Simple Voice Chat 2.6.27 | проксимити-голос, нужен мод у клиента |
 
-Конфиги плагинов генерируются при первом запуске и в git не попадают — в репозитории только jar-ы.
+Конфиги плагинов генерируются при первом запуске и в git не попадают. Jar-ы тоже не в git:
+список версий — `plugins.txt`, скачивание — `./build-plugins` (`seasonsbar` собирается из `seasonsbar/`).
 Исключение: `server/plugins/BlueMap/core.conf` (`accept-download: true`, иначе BlueMap не рендерит).
 
 ## экономика

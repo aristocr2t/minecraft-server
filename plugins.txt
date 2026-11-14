@@ -1,0 +1,27 @@
+# плагины сервера: slug Modrinth | version_number | файл в server/plugins
+# скачивание: ./build-plugins (Modrinth API, game_versions=["26.3"], loaders=["paper"])
+# строки, начинающиеся с manual, не качаются: <файл> <примечание>
+advanced-portals	2.8.0-spigot	advanced-portals-2.8.0.jar
+authmereloaded	6.0.1	AuthMe-6.0.1-Paper.jar
+bluemap	5.29-paper	bluemap-5.29-paper.jar
+boatracing	26.2.2	BoatRacing-26.2.2.jar
+chunky	1.5.66	Chunky-Paper-1.5.66.jar
+dragon-egg-respawns	v1.1.0.0+plugin	dragon-egg-respawns-1.1.0.0.jar
+dragon-egg-simunix271	3.1.0	DragonEgg-3.1.0.jar
+emffishstew	1.0.3	EMFFishStew-1.0.3.jar
+essentialsc	4.3.5	EssentialsC-4.3.5-all.jar
+evenmorefish	2.5.3	EvenMoreFish-2.5.3.jar
+griefprevention	16.18.8	GriefPrevention-16.18.8.jar
+luckperms	v5.5.71-bukkit	LuckPerms-Bukkit-5.5.71.jar
+placeholderapi	2.12.3	PlaceholderAPI-26.3.jar
+playtimereward	1.0	playtimereward-1.0.jar
+roundhaven	0.12.0	RoundHaven-26.3-0.12.0.jar
+seasonsplus	1.4.2-bb9c5f1	SeasonsPlus-1.4.2.jar
+simple-voice-chat	bukkit-2.6.27	voicechat-bukkit-2.6.27.jar
+simplehungergames	1.2	HungerGames-1.2.jar
+skinsrestorer	15.12.6	SkinsRestorer-15.12.6.jar
+ujobs	1.0.8	UJobs-1.0.8.jar
+vaultunlocked	2.20.3	VaultUnlocked-2.20.3.jar
+worldedit	7.4.6	worldedit-bukkit-7.4.6.jar
+worldguard	7.0.21	worldguard-bukkit-7.0.21.jar
+manual	seasonsbar-1.0.0.jar	собрать из seasonsbar/: ./seasonsbar/build.sh (paper-api)
