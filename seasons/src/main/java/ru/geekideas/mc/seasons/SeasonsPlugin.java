@@ -49,6 +49,8 @@ public final class SeasonsPlugin extends JavaPlugin implements TabExecutor {
     private int chunksPerTick;
     private int millisPerTick;
     private int commitEvery;
+    boolean thawEnabled;
+    int thawPerChunk;
     private int logEvery;
     private int minY;
     private int maxY;
@@ -61,6 +63,8 @@ public final class SeasonsPlugin extends JavaPlugin implements TabExecutor {
         chunksPerTick = Math.max(1, getConfig().getInt("chunks-per-tick", 16));
         millisPerTick = Math.max(1, getConfig().getInt("max-millis-per-tick", 20));
         commitEvery = Math.max(1, getConfig().getInt("commit-every-chunks", 32));
+        thawEnabled = getConfig().getBoolean("thaw.enabled", true);
+        thawPerChunk = Math.max(0, getConfig().getInt("thaw.per-chunk", 48));
         logEvery = Math.max(1, getConfig().getInt("log-every-chunks", 200));
         minY = getConfig().getInt("min-y", 40);
         maxY = getConfig().getInt("max-y", 320);

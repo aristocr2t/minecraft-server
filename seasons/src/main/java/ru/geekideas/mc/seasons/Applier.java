@@ -7,6 +7,8 @@ import java.util.Map;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.Material;
 
 /**
  * Применение сезона по карте: читаем original_biome из базы и ставим нужный биом в мир.
@@ -43,6 +45,36 @@ final class Applier extends Pass {
             queue.add(new long[]{chunkX, chunkZ});
         }
         queue.sort(Comparator.comparingLong((long[] pos) -> pos[0] * pos[0] + pos[1] * pos[1]));
+    }
+
+    /**
+     * Наш ускоритель таяния: убирает слой снега, убивает наледь, превращает лёд в воду.
+     * Ледники (PACKED_ICE, BLUE_ICE) не трогаем. Проход сверху вниз, чтобы снег оседал слоями.
+     */
+    private void thawChunk(Chunk chunk, int perChunk) {
+        int done = 0;
+        outer:
+        for (int y = world.getMaxHeight() - 1; y >= world.getMinHeight(); y--) {
+            for (int dx = 0; dx < 16; dx++) {
+                for (int dz = 0; dz < 16; dz++) {
+                    if (done >= perChunk) {
+                        break outer;
+                    }
+                    Block block = chunk.getBlock(dx, y, dz);
+                    Material type = block.getType();
+                    if (type == Material.SNOW) {
+                        block.setType(Material.AIR, false);
+                        done++;
+                    } else if (type == Material.FROSTED_ICE) {
+                        block.setType(Material.AIR, false);
+                        done++;
+                    } else if (type == Material.ICE) {
+                        block.setType(Material.WATER, false);
+                        done++;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -108,6 +140,9 @@ final class Applier extends Pass {
         }
         if (written > 0) {
             world.refreshChunk(chunkX, chunkZ);
+        }
+        if (plugin.thawEnabled && season != Season.WINTER) {
+            thawChunk(chunk, plugin.thawPerChunk);
         }
         int[] cellsByState = new int[Season.values().length];
         if (season == Season.SPRING || season == Season.RESTORE) {
