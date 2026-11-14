@@ -50,6 +50,7 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
 
     private final List<State> states = new ArrayList<>();
     private NamespacedKey thermometerKey;
+    private NamespacedKey bodyKey;
 
     private File seasonFile;
     private String season = "WINTER";
@@ -59,6 +60,7 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
     public void onEnable() {
         saveDefaultConfig();
         thermometerKey = new NamespacedKey(this, "thermometer");
+        bodyKey = new NamespacedKey(this, "body");
         loadStates();
         loadSeason();
         getServer().getPluginManager().registerEvents(this, this);
@@ -468,51 +470,16 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
         return "жарко";
     }
 
-    /** Точка спавна без разброса: /gamerule spawnRadius на этом сервере недоступен. */
-    @EventHandler
-    public void onSpawnLocation(org.spigotmc.event.player.PlayerSpawnLocationEvent event) {
-        var cfg = getConfig();
-        if (!cfg.getBoolean("spawn.exact", false)) {
-            return;
-        }
-        // только для новых игроков: иначе каждого релога телепортировало бы на спавн
-        if (event.getPlayer().hasPlayedBefore()) {
-            return;
-        }
-        var world = Bukkit.getWorld(cfg.getString("spawn.world", "world"));
-        if (world == null) {
-            return;
-        }
-        event.setSpawnLocation(new org.bukkit.Location(world,
-                cfg.getDouble("spawn.x", 0.5),
-                cfg.getDouble("spawn.y", 68.0),
-                cfg.getDouble("spawn.z", 0.5)));
-    }
-
-    /** После смерти — ровно в точку спавна, без разброса. */
-    @EventHandler
-    public void onRespawn(org.bukkit.event.player.PlayerRespawnEvent event) {
-        var cfg = getConfig();
-        if (!cfg.getBoolean("spawn.exact", false) || event.isBedSpawn() || event.isAnchorSpawn()) {
-            return;
-        }
-        var world = Bukkit.getWorld(cfg.getString("spawn.world", "world"));
-        if (world == null) {
-            return;
-        }
-        event.setRespawnLocation(new org.bukkit.Location(world,
-                cfg.getDouble("spawn.x", 0.5),
-                cfg.getDouble("spawn.y", 68.0),
-                cfg.getDouble("spawn.z", 0.5)));
-    }
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         join(event.getPlayer());
     }
 
     private void join(Player player) {
-        body.put(player.getUniqueId(), getConfig().getDouble("body-base", 36.6));
+        // температура тела переживает перезаход: храним в данных игрока
+        Double saved = player.getPersistentDataContainer().get(bodyKey, PersistentDataType.DOUBLE);
+        body.put(player.getUniqueId(),
+                saved != null ? saved : getConfig().getDouble("body-base", 36.6));
         if (getConfig().getBoolean("bossbar.enabled", true)) {
             BossBar bar = Bukkit.createBossBar("", BarColor.GREEN, barStyle(getConfig()));
             bar.addPlayer(player);
@@ -522,6 +489,11 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+        Double value = body.remove(event.getPlayer().getUniqueId());
+        if (value != null) {
+            event.getPlayer().getPersistentDataContainer()
+                    .set(bodyKey, PersistentDataType.DOUBLE, value);
+        }
         BossBar bar = bars.remove(event.getPlayer().getUniqueId());
         if (bar != null) {
             bar.removeAll();
