@@ -519,6 +519,27 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
         });
     }
 
+
+    /** Днём на кровати пускает только больного: лежит и лечится. Здоровому — обычный отказ. */
+    @EventHandler
+    public void onBedEnter(org.bukkit.event.player.PlayerBedEnterEvent event) {
+        if (event.getBedEnterResult() == org.bukkit.event.player.PlayerBedEnterEvent.BedEnterResult.OK) {
+            return; // ночь — обычный сон
+        }
+        if (!event.getBedEnterResult().name().contains("NOT")) {
+            return;
+        }
+        Player player = event.getPlayer();
+        long until = illnessUntil.getOrDefault(player.getUniqueId(), 0L);
+        boolean sick = until > 0 || player.hasPotionEffect(PotionEffectType.NAUSEA);
+        event.setUseBed(org.bukkit.event.Event.Result.ALLOW);
+        if (sick) {
+            player.sendActionBar(Component.text("вы лежите: отдых помогает выздороветь"));
+        } else {
+            player.sendActionBar(Component.text("вы лежите: отдых согревает"));
+        }
+    }
+
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (!isThermometer(event.getItem())) {
