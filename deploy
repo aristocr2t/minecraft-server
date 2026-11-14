@@ -49,11 +49,16 @@ if [ -d overlay/server ]; then
   $SUDO rm -f server/server.properties.tpl
 
   : "${RCON_PASSWORD:?RCON_PASSWORD не задан: создай env/$ENV.env по образцу env/production.env.example}"
+
+  # management-server выключен; секрет из env, иначе оставляем тот, что уже стоит в файле
+  current_ms=""
+  if [ -f server/server.properties ]; then
+    current_ms=$(sed -n 's/^management-server-secret=//p' server/server.properties)
+  fi
   tmp=$(mktemp)
-  # пустой MANAGEMENT_SERVER_SECRET оставляет строку как есть (не затираем секрет пустым)
-  awk -v pw="$RCON_PASSWORD" -v ms="${MANAGEMENT_SERVER_SECRET:-}" '
+  awk -v pw="$RCON_PASSWORD" -v ms="${MANAGEMENT_SERVER_SECRET:-$current_ms}" '
     /^rcon\.password=/ { print "rcon.password=" pw; next }
-    /^management-server-secret=/ { if (ms != "") print "management-server-secret=" ms; else print; next }
+    /^management-server-secret=/ { print "management-server-secret=" ms; next }
     { print }' overlay/server/server.properties.tpl >"$tmp"
 
   if [ -f server/server.properties ] && cmp -s "$tmp" server/server.properties; then
