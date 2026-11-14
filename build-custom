@@ -1,0 +1,30 @@
+#!/bin/bash -euo pipefail
+
+# собирает кастомные плагины: каждый каталог с build.sh → server/plugins/<jar>.
+# build.sh сам решает, чем собирать (обычно docker + JDK 25).
+
+cd "$(dirname "$0")"
+dest=server/plugins
+mkdir -p "$dest"
+
+built=0
+for build in */build.sh; do
+  [ -f "$build" ] || continue
+  dir=${build%/build.sh}
+
+  echo "== $dir"
+  (cd "$dir" && ./build.sh)
+
+  jar=$(ls -t "$dir"/*.jar 2>/dev/null | head -1 || true)
+  if [ -z "$jar" ]; then
+    echo "ошибка: $dir/build.sh не оставил jar в $dir/" >&2
+    exit 1
+  fi
+  cp -f "$jar" "$dest/"
+  echo "→ $dest/$(basename "$jar")"
+  built=$((built + 1))
+done
+
+if [ "$built" = 0 ]; then
+  echo "кастомных плагинов нет (*/build.sh не найден)"
+fi

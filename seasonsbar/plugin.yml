@@ -1,0 +1,6 @@
+name: SeasonsBar
+version: 1.0.0
+main: seasonsbar.SeasonsBar
+api-version: '26.3'
+depend: [Seasons]
+description: Полоска температуры из SeasonsPlus без цифр.

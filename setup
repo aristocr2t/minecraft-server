@@ -6,6 +6,12 @@
 rc() { ./rcon "$*" >/dev/null 2>&1 || true; }
 rq() { ./rcon "$*" 2>&1 | grep -v 'env/.*not found'; }
 
+# без живого rcon скрипт молча строит спавн не на той высоте — лучше упасть
+./rcon "list" >/dev/null 2>&1 || {
+  echo "rcon недоступен: сначала ./deploy (или ENV=... ), потом ./setup" >&2
+  exit 1
+}
+
 echo "== группы LuckPerms"
 rc "lp creategroup vip"
 rc "lp creategroup played24h"
@@ -97,7 +103,12 @@ rc "gamerule respawn_radius 2"
 rc "setworldspawn 0 $((y+2)) 0"
 rc "forceload remove -16 -16 16 16"
 
+# граница мира 30000×30000 вокруг 0 0 (в уровне её не перенести файлом)
+rc "worldborder center 0 0"
+rc "worldborder set 30000"
+
 rq "gamerule natural_health_regeneration"
 rq "gamerule respawn_radius"
+rq "worldborder get"
 
 echo "== готово: спавн 0 $((y+2)) 0; VIP: ./rcon \"lp user <ник> parent add vip\""

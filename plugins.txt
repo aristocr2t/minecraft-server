@@ -24,4 +24,4 @@ ujobs	1.0.8	UJobs-1.0.8.jar
 vaultunlocked	2.20.3	VaultUnlocked-2.20.3.jar
 worldedit	7.4.6	worldedit-bukkit-7.4.6.jar
 worldguard	7.0.21	worldguard-bukkit-7.0.21.jar
-manual	seasonsbar-1.0.0.jar	собрать из seasonsbar/: ./seasonsbar/build.sh (paper-api)
+manual	seasonsbar.jar	кастомный плагин: собирается ./build-custom (seasonsbar/build.sh)

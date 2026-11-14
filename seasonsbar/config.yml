@@ -1,0 +1,28 @@
+# Как часто обновлять полоску (в тиках, 20 = 1 секунда).
+interval-ticks: 20
+
+# Диапазон °C, который отображается как 0..100% полоски.
+min-temperature: -20
+max-temperature: 60
+
+# Название полоски: без цифр, без иконок.
+title: "температура"
+
+# Цвет по порогам: берётся первый порог, где температура <= max.
+thresholds:
+  - max: -10
+    color: PURPLE
+  - max: 10
+    color: BLUE
+  - max: 25
+    color: GREEN
+  - max: 40
+    color: YELLOW
+  - max: 50
+    color: RED
+  - max: 999
+    color: RED
+
+# Отладка: писать в лог "temp=… → value=…,color=…" раз в debug-seconds секунд.
+debug: true
+debug-seconds: 10

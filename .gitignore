@@ -126,17 +126,17 @@ server/*
 # конфиги и данные плагинов генерируются при первом запуске
 server/plugins/*
 
-# конфиги, которые должны быть в репозитории
-!server/plugins/AdvancedPortals/
-!server/plugins/AdvancedPortals/config.yaml
-!server/plugins/PlaytimeReward/
-!server/plugins/PlaytimeReward/config.yml
-!server/plugins/LuckPerms/
-!server/plugins/LuckPerms/config.yml
+# наши конфиги и настройки плагинов живут в overlay/ и коммитятся;
+# ./deploy копирует overlay/server/** поверх server/
+!overlay/
+!overlay/**
 
-# BlueMap needs accept-download: true or it refuses to render
-!server/plugins/BlueMap/
-!server/plugins/BlueMap/core.conf
+# build-выхлоп кастомных плагинов (собирается ./build-custom)
+seasonbiomes/out/
+
+# seasonsbar/lib/*.jar — только classpath для сборки (в server/plugins не попадают)
+!seasonsbar/lib/
+!seasonsbar/lib/*.jar
 
 /tmp
 .playwright-mcp/

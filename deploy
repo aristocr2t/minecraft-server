@@ -1,7 +1,12 @@
-#!/bin/bash -e
+#!/bin/bash -euo pipefail
+
+# раскладывает наши конфиги из overlay/ поверх server/ и поднимает контейнер.
+# идемпотентен: на работающем сервере ничего не рестартует, server.properties
+# переписывается только если отличается от шаблона, пустой секрет не затирает старый.
+# NO_START=1 — только разложить файлы, контейнер не трогать.
 
 bash_ts() {
-  echo $(date +'%Y-%m-%d %H:%M:%S.%3N')
+  echo $(date +'%Y-%m-%d %H:%M:%S')
 }
 
 export ENV=${ENV:-production}
@@ -21,8 +26,47 @@ fi
 
 # worldgen-датапаки (Tectonic) должны лежать до создания мира
 if [ -d datapacks ]; then
-  sudo -n mkdir -p server/world/datapacks 2>/dev/null || mkdir -p server/world/datapacks
-  sudo -n cp -f datapacks/*.zip server/world/datapacks/ 2>/dev/null || cp -f datapacks/*.zip server/world/datapacks/
+  mkdir -p server/world/datapacks
+  cp -f datapacks/*.zip server/world/datapacks/
+fi
+
+# Mojang EULA: без файла сервер не стартует вообще
+if [ ! -f server/eula.txt ]; then
+  echo "eula=true" >server/eula.txt
+  echo "$(bash_ts) создал server/eula.txt (eula=true)"
+fi
+
+# --- overlay: наши конфиги (единственное место, где они версионируются) ---
+if [ -d overlay/server ]; then
+  echo "$(bash_ts) overlay → server/"
+  cp -R overlay/server/. server/
+  rm -f server/server.properties.tpl
+
+  : "${RCON_PASSWORD:?RCON_PASSWORD не задан: создай env/$ENV.env по образцу env/production.env.example}"
+  tmp=$(mktemp)
+  # пустой MANAGEMENT_SERVER_SECRET оставляет строку как есть (не затираем секрет пустым)
+  awk -v pw="$RCON_PASSWORD" -v ms="${MANAGEMENT_SERVER_SECRET:-}" '
+    /^rcon\.password=/ { print "rcon.password=" pw; next }
+    /^management-server-secret=/ { if (ms != "") print "management-server-secret=" ms; else print; next }
+    { print }' overlay/server/server.properties.tpl >"$tmp"
+
+  if [ -f server/server.properties ] && cmp -s "$tmp" server/server.properties; then
+    echo "$(bash_ts) server.properties без изменений"
+    rm -f "$tmp"
+  else
+    if [ -f server/server.properties ]; then
+      cp -p server/server.properties "server/server.properties.bak-$(date +%s)"
+    fi
+    mv "$tmp" server/server.properties
+    echo "$(bash_ts) server.properties из overlay/server/server.properties.tpl"
+  fi
+else
+  echo "$(bash_ts) overlay/server не найден, конфиги не трогаю"
+fi
+
+if [ "${NO_START:-0}" = 1 ]; then
+  echo "$(bash_ts) NO_START=1: файлы разложены, контейнер не трогаю"
+  exit 0
 fi
 
 if [ ! "$(docker ps -aq -f name=^$SERVER_HOST$)" ]; then
@@ -31,4 +75,6 @@ if [ ! "$(docker ps -aq -f name=^$SERVER_HOST$)" ]; then
 elif [ "$(docker ps -aq -f status=exited -f name=^$SERVER_HOST$)" ]; then
   echo "$(bash_ts) start $SERVER_HOST:$SERVER_PORT"
   docker start "$SERVER_HOST"
+else
+  echo "$(bash_ts) $SERVER_HOST уже работает, рестарт не нужен"
 fi
