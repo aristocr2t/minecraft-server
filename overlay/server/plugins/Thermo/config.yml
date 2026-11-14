@@ -22,6 +22,17 @@ body-base: 36.6
 # Насколько сильно среда тянет тело за собой: delta = (env - 20) * body-factor
 body-factor: 0.22
 
+# Плавность: тело меняется не мгновенно, а дрейфует к цели.
+# 0.05 °C/с — от нормы до обморожения около двух минут.
+body-drift-per-second: 0.05
+
+# Отдых: сон и лежание на кровати тянут тело обратно к норме (36.6).
+rest:
+  # Во сколько раз быстрее дрейф во сне.
+  sleep-multiplier: 4.0
+  # Во сколько раз быстрее дрейф, если лежать на кровати (присесть на неё).
+  bed-multiplier: 2.0
+
 # ---------------------------- Среда -------------------------
 environment:
   base: 20.0
@@ -129,13 +140,13 @@ states:
     max: 31.0
     label: "обморожение"
     damage: 1.0
-    damage-seconds: 2
+    damage-seconds: 30
     effects: [ { type: SLOWNESS, amplifier: 2 } ]
   - id: cold
     max: 34.0
     label: "холодно"
     damage: 1.0
-    damage-seconds: 4
+    damage-seconds: 60
     effects: [ { type: SLOWNESS, amplifier: 1 } ]
   - id: cool
     max: 35.5
@@ -150,12 +161,14 @@ states:
   - id: hot
     max: 42.0
     label: "жарко"
+    damage: 1.0
+    damage-seconds: 60
     effects: [ { type: SLOWNESS, amplifier: 0 }, { type: HUNGER, amplifier: 0 } ]
   - id: burning
     max: 99.0
     label: "перегрев"
     damage: 1.0
-    damage-seconds: 3
+    damage-seconds: 30
     effects: [ { type: NAUSEA, amplifier: 0 } ]
 
 # Цвет боссбара по состоянию тела.

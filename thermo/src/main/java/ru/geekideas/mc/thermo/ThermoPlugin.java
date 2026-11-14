@@ -168,7 +168,21 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
                 delta += cfg.getDouble("factors.wet", -1.0);
             }
 
-            double value = Math.max(25.0, Math.min(45.0, base + delta));
+            double target = Math.max(25.0, Math.min(45.0, base + delta));
+            double step = cfg.getDouble("body-drift-per-second", 0.05)
+                    * Math.max(1, cfg.getInt("interval-ticks", 20)) / 20.0;
+
+            // сон и лежание на кровати тянут тело обратно к норме
+            if (player.isSleeping()) {
+                target = base;
+                step *= cfg.getDouble("rest.sleep-multiplier", 4.0);
+            } else if (player.isSneaking() && isOnBed(player)) {
+                target = base;
+                step *= cfg.getDouble("rest.bed-multiplier", 2.0);
+            }
+
+            double current = body.getOrDefault(id, target);
+            double value = current + Math.max(-step, Math.min(step, target - current));
             body.put(id, value);
 
             State state = stateOf(value);
@@ -178,6 +192,16 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             updateBar(player, value, state, cfg);
             updateActionBar(player, value, state, env, clothing, cfg);
         }
+    }
+
+    /** Игрок стоит/лежит на кровати: блок под ним или в нём — кровать. */
+    private boolean isOnBed(Player player) {
+        var loc = player.getLocation();
+        return isBed(loc.getBlock().getType()) || isBed(loc.clone().subtract(0, 1, 0).getBlock().getType());
+    }
+
+    private boolean isBed(Material material) {
+        return material.name().endsWith("_bed");
     }
 
     private void applyDamage(Player player, State state) {
