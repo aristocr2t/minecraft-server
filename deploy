@@ -1,4 +1,6 @@
-#!/bin/bash -euo pipefail
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 # раскладывает наши конфиги из overlay/ поверх server/ и поднимает контейнер.
 # идемпотентен: на работающем сервере ничего не рестартует, server.properties

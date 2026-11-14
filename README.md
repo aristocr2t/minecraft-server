@@ -4,15 +4,72 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 
 > Гайд для игроков: **GUIDE.md** — как зайти, приват, экономика, порталы, мини-игры.
 
-## deploy
+## Развёртывание с нуля
 
-1. `./build-server` — скачать свежий Paper 26.3 в `server/server.jar` (бинарник в git не хранится).
-2. `./build-plugins` — скачать плагины из `plugins.txt` (Modrinth) в `server/plugins`.
-3. `echo "eula=true" > server/eula.txt` — один раз, если файла нет (Mojang EULA).
-4. `./deploy` — собрать образ и поднять контейнер. Переменные берутся из `env/default.env`, поверх — из `env/$ENV.env` (не обязателен).
-5. `./setup` — один раз после первого запуска: группы прав и спавн на 0 0 (см. ниже).
+Нужны docker + curl + python3 (и docker-образ `eclipse-temurin:25-jdk` для кастомных плагинов).
+
+```bash
+git clone https://github.com/aristocr2t/minecraft-server.git && cd minecraft-server
+cp env/production.env.example env/production.env    # вписать RCON_PASSWORD
+./bootstrap                                         # Paper + плагины + кастомные + конфиги + setup
+./rcon list                                         # проверка: сервер отвечает
+```
+
+`./bootstrap` — это `./build-server` → `./build-plugins` → `./build-custom` → `./deploy` → `./setup`
+(`set -euo pipefail`: падает на первой ошибке, повторный запуск безопасен).
+
+| шаг | что делает |
+| --- | --- |
+| `./build-server` | качает свежий Paper 26.3 в `server/server.jar` |
+| `./build-plugins` | качает плагины из `plugins.txt` (Modrinth) в `server/plugins` |
+| `./build-custom` | собирает кастомные плагины из `*/build.sh` (`seasonsbar`) в `server/plugins` |
+| `./deploy` | копирует `overlay/server/**` поверх `server/`, рендерит `server.properties` из `server.properties.tpl`, создаёт `eula.txt`, поднимает контейнер. Уже работающий контейнер не рестартует |
+| `./setup` | группы LuckPerms, водяные порталы, спавн на 0 0, worldborder 30000, геймрулы. Нужен живой сервер |
+
+Флаги: `NO_START=1 ./bootstrap` — всё собрать и разложить, но не поднимать сервер и не звать `./setup`;
+`NO_START=1 ./deploy` — применить только конфиги; `ENV=staging ./deploy` — взять `env/staging.env`.
+Переменные: `env/default.env` (порты, имя контейнера), `env/$ENV.env` (секреты, в git не попадает).
 
 Порты: 25565/tcp — игра, 8100/tcp — 3D-карта, 24454/udp — голосовой чат.
+
+Куда смотреть при ошибках:
+
+- `RCON_PASSWORD не задан` — нет `env/production.env` или он пустой (`./deploy` падает сразу, до docker);
+- сервер не отвечает по rcon — `docker logs minecraft_server`: обычно EULA, битый `server.jar` или занятый порт;
+- `./build-plugins` падает на плагине — версия из `plugins.txt` пропала с Modrinth, поправить строку;
+- кастомный плагин не собрался — запустить `./seasonsbar/build.sh` руками (нужен docker);
+- `./setup` падает «rcon недоступен» — сервер ещё грузится или `./deploy` не проходил.
+
+## overlay: наши конфиги
+
+Всё, что мы меняли руками на живом сервере, лежит в `overlay/server/...` (структура = структура `server/`).
+`./deploy` копирует это поверх `server/`. Секретов в overlay нет: `server.properties.tpl` — шаблон,
+`rcon.password` и `management-server-secret` подставляются из `env/$ENV.env`.
+
+```
+overlay/server/
+  server.properties.tpl                   # difficulty=hard, online-mode=false, view-distance, motd, seed, large_biomes
+  plugins/EssentialsC/                    # config.yml (мотд, сайдбар, экономика), kits.yml, rules.txt
+  plugins/AuthMe/                         # config.yml, messages/messages_ru.yml, help_ru.yml, welcome.txt
+  plugins/WorldGuard/config.yml           # флаги взрывов
+  plugins/Seasons/{config,seasons}.yml    # сезон 1440 мин, WINTER
+  plugins/SeasonsBar/config.yml           # полоска температуры
+  plugins/GriefPreventionData/config.yml  # блоки привата на старте и за игру
+  plugins/AdvancedPortals/config.yaml
+  plugins/PlaytimeReward/config.yml
+  plugins/LuckPerms/config.yml
+  plugins/BlueMap/{core,plugin}.conf, maps/world.conf   # accept-download=true, render-mask ±3000
+  world/datapacks/item-cleaner/           # авто-очистка выброшенных предметов
+```
+
+**Поменял настройку на живом сервере — перенеси файл в `overlay/` и закоммить.** Иначе правка
+потеряется при следующем `./deploy` или на новой машине: `server/` в git не хранится.
+
+Обратный путь: правишь файл в `overlay/`, `NO_START=1 ./deploy`, перезапуск контейнера когда удобно.
+
+Чего в overlay нет и почему: геймрулы, worldborder, точка спавна, группы LuckPerms, приваты, деньги
+живут в данных мира/базах плагинов, а не в конфигах — их ставит `./setup` или сами плагины.
+Для нового мира `./setup` обязателен (он же строит спавн).
 
 ## rcon
 
@@ -42,9 +99,10 @@ Paper **26.3** (Java 25) в docker, ~10 игроков.
 | RoundHaven 0.12.0 | ивенты в отдельном мире: `/rh` — Spleef, Sumo, Archer Rush, Chaos; инвентари игроков сохраняются и возвращаются |
 | Simple Voice Chat 2.6.27 | проксимити-голос, нужен мод у клиента |
 
-Конфиги плагинов генерируются при первом запуске и в git не попадают. Jar-ы тоже не в git:
-список версий — `plugins.txt`, скачивание — `./build-plugins` (`seasonsbar` собирается из `seasonsbar/`).
-Исключение: `server/plugins/BlueMap/core.conf` (`accept-download: true`, иначе BlueMap не рендерит).
+Jar-ы в git не лежат: список версий — `plugins.txt`, скачивание — `./build-plugins`;
+кастомные (`seasonsbar`) — `./build-custom` из `*/build.sh`.
+Остальные конфиги плагинов генерируются при первом запуске и в git не попадают,
+кроме наших: они в `overlay/` (см. «overlay: наши конфиги» выше).
 
 ## экономика
 
@@ -81,8 +139,9 @@ VIP выдаётся руками: `./rcon "lp user <ник> parent add vip"`.
 3. выделить рамку топором и создать портал: `/portal create <имя> <destination>`;
 4. точки назначения делает админ: `/desti create <имя>` (стоя на месте), `/desti list`.
 
-Права LuckPerms лежат в `server/plugins/LuckPerms/yaml-storage/` (storage = yaml),
-плагинные — в `server/plugins/AdvancedPortals/config.yaml` и `server/plugins/PlaytimeReward/config.yml`.
+Права LuckPerms лежат в `server/plugins/LuckPerms/yaml-storage/` (storage = yaml, группы создаёт `./setup`),
+плагинные — в `server/plugins/AdvancedPortals/config.yaml` и `server/plugins/PlaytimeReward/config.yml`
+(оба версионируются в `overlay/`).
 
 ## спавн
 

@@ -1,4 +1,6 @@
-#!/bin/bash -euo pipefail
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 # собирает кастомные плагины: каждый каталог с build.sh → server/plugins/<jar>.
 # build.sh сам решает, чем собирать (обычно docker + JDK 25).
