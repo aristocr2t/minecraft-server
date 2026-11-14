@@ -48,11 +48,14 @@ final class Applier extends Pass {
     }
 
     /**
-     * Наш ускоритель таяния: убирает слой снега, убивает наледь, превращает лёд в воду.
-     * Ледники (PACKED_ICE, BLUE_ICE) не трогаем. Проход сверху вниз, чтобы снег оседал слоями.
+     * Наш ускоритель таяния + сезонный грунт.
+     * Летом не трогаем. Зимой трава удаляется, осенью длинная → короткая,
+     * весной земля и подзол засеваются травой. Ледники не трогаем.
      */
-    private void thawChunk(Chunk chunk, int perChunk) {
+    private void groundChunk(Chunk chunk, int perChunk) {
         int done = 0;
+        java.util.Random random = new java.util.Random(chunk.getWorld().getSeed()
+                ^ ((long) chunk.getX() << 32 | (chunk.getZ() & 0xffffffffL)));
         outer:
         for (int y = world.getMaxHeight() - 1; y >= world.getMinHeight(); y--) {
             for (int dx = 0; dx < 16; dx++) {
@@ -62,15 +65,44 @@ final class Applier extends Pass {
                     }
                     Block block = chunk.getBlock(dx, y, dz);
                     Material type = block.getType();
-                    if (type == Material.SNOW) {
-                        block.setType(Material.AIR, false);
-                        done++;
-                    } else if (type == Material.FROSTED_ICE) {
-                        block.setType(Material.AIR, false);
-                        done++;
-                    } else if (type == Material.ICE) {
-                        block.setType(Material.WATER, false);
-                        done++;
+                    switch (season) {
+                        case AUTUMN -> {
+                            if (plugin.grassAutumn && type == Material.TALL_GRASS) {
+                                block.setType(Material.SHORT_GRASS, false);
+                                done++;
+                            }
+                        }
+                        case WINTER -> {
+                            if (plugin.grassWinter && (type == Material.TALL_GRASS || type == Material.SHORT_GRASS)
+                                    && random.nextDouble() < plugin.grassWinterChance) {
+                                block.setType(Material.AIR, false);
+                                done++;
+                            }
+                        }
+                        case SPRING -> {
+                            if (plugin.grassSpring && (type == Material.GRASS_BLOCK || type == Material.DIRT
+                                    || type == Material.PODZOL) && random.nextDouble() < plugin.grassSpringChance) {
+                                Block above = block.getRelative(org.bukkit.block.BlockFace.UP);
+                                if (above.getType().isAir()) {
+                                    above.setType(Material.SHORT_GRASS, false);
+                                    done++;
+                                }
+                            }
+                        }
+                        default -> {
+                        }
+                    }
+                    if (season != Season.WINTER && season != Season.RESTORE) {
+                        if (type == Material.SNOW) {
+                            block.setType(Material.AIR, false);
+                            done++;
+                        } else if (type == Material.FROSTED_ICE) {
+                            block.setType(Material.AIR, false);
+                            done++;
+                        } else if (type == Material.ICE) {
+                            block.setType(Material.WATER, false);
+                            done++;
+                        }
                     }
                 }
             }
@@ -141,8 +173,8 @@ final class Applier extends Pass {
         if (written > 0) {
             world.refreshChunk(chunkX, chunkZ);
         }
-        if (plugin.thawEnabled && season != Season.WINTER) {
-            thawChunk(chunk, plugin.thawPerChunk);
+        if (plugin.thawEnabled) {
+            groundChunk(chunk, plugin.thawPerChunk);
         }
         int[] cellsByState = new int[Season.values().length];
         if (season == Season.SPRING || season == Season.RESTORE) {

@@ -51,6 +51,11 @@ public final class SeasonsPlugin extends JavaPlugin implements TabExecutor {
     private int commitEvery;
     boolean thawEnabled;
     int thawPerChunk;
+    boolean grassAutumn;
+    boolean grassWinter;
+    boolean grassSpring;
+    double grassWinterChance;
+    double grassSpringChance;
     private int logEvery;
     private int minY;
     private int maxY;
@@ -65,6 +70,11 @@ public final class SeasonsPlugin extends JavaPlugin implements TabExecutor {
         commitEvery = Math.max(1, getConfig().getInt("commit-every-chunks", 32));
         thawEnabled = getConfig().getBoolean("thaw.enabled", true);
         thawPerChunk = Math.max(0, getConfig().getInt("thaw.per-chunk", 48));
+        grassAutumn = getConfig().getBoolean("thaw.grass.autumn", true);
+        grassWinter = getConfig().getBoolean("thaw.grass.winter", true);
+        grassSpring = getConfig().getBoolean("thaw.grass.spring", true);
+        grassWinterChance = Math.max(0.0, Math.min(1.0, getConfig().getDouble("thaw.grass.winter-chance", 0.8)));
+        grassSpringChance = Math.max(0.0, Math.min(1.0, getConfig().getDouble("thaw.grass.spring-chance", 0.3)));
         logEvery = Math.max(1, getConfig().getInt("log-every-chunks", 200));
         minY = getConfig().getInt("min-y", 40);
         maxY = getConfig().getInt("max-y", 320);

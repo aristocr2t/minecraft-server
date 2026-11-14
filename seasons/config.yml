@@ -18,6 +18,13 @@ random-tick-speed:
 thaw:
   enabled: true
   per-chunk: 48
+  # Сезонный грунт: трава по сезонам. Летом не трогаем.
+  grass:
+    autumn: true   # длинная трава → короткая
+    winter: true   # обе → удаляются (почти вся)
+    spring: true   # земля и подзол → травой
+    winter-chance: 0.8
+    spring-chance: 0.3
 
 # Порция работы за тик: чанков и миллисекунд.
 chunks-per-tick: 16
