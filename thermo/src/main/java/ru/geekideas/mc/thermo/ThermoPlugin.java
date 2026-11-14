@@ -2,6 +2,7 @@ package ru.geekideas.mc.thermo;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -150,6 +151,17 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID id = player.getUniqueId();
+
+            // в творческом и наблюдателе температура всегда нормальная
+            if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+                body.put(id, base);
+                State normal = stateOf(base);
+                updateBar(player, base, normal, cfg);
+                updateActionBar(player, base, normal, Env.of(player, cfg, season),
+                        Env.clothing(player, cfg, player.isInWater()), cfg);
+                continue;
+            }
+
             Env.Result env = Env.of(player, cfg, season);
             boolean wet = player.isInWater();
             double clothing = Env.clothing(player, cfg, wet);
@@ -179,6 +191,9 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             } else if (player.isSneaking() && isOnBed(player)) {
                 target = base;
                 step *= cfg.getDouble("rest.bed-multiplier", 2.0);
+            } else if (nearBeacon(player, cfg)) {
+                target = base;
+                step *= cfg.getDouble("beacon.multiplier", 6.0);
             }
 
             double current = body.getOrDefault(id, target);
@@ -198,6 +213,25 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
     private boolean isOnBed(Player player) {
         var loc = player.getLocation();
         return isBed(loc.getBlock().getType()) || isBed(loc.clone().subtract(0, 1, 0).getBlock().getType());
+    }
+
+    /** Маяк рядом: шаг 2 блока, чтобы не сканировать тысячи блоков каждый тик. */
+    private boolean nearBeacon(Player player, FileConfiguration cfg) {
+        int radius = cfg.getInt("beacon.radius", 8);
+        if (radius <= 0) {
+            return false;
+        }
+        var origin = player.getLocation().getBlock();
+        for (int dx = -radius; dx <= radius; dx += 2) {
+            for (int dy = -radius; dy <= radius; dy += 2) {
+                for (int dz = -radius; dz <= radius; dz += 2) {
+                    if (origin.getRelative(dx, dy, dz).getType() == Material.BEACON) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isBed(Material material) {
@@ -432,6 +466,23 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             return "тепло";
         }
         return "жарко";
+    }
+
+    /** Точка спавна без разброса: /gamerule spawnRadius на этом сервере недоступен. */
+    @EventHandler
+    public void onSpawnLocation(org.spigotmc.event.player.PlayerSpawnLocationEvent event) {
+        var cfg = getConfig();
+        if (!cfg.getBoolean("spawn.exact", false)) {
+            return;
+        }
+        var world = Bukkit.getWorld(cfg.getString("spawn.world", "world"));
+        if (world == null) {
+            return;
+        }
+        event.setSpawnLocation(new org.bukkit.Location(world,
+                cfg.getDouble("spawn.x", 0.5),
+                cfg.getDouble("spawn.y", 68.0),
+                cfg.getDouble("spawn.z", 0.5)));
     }
 
     @EventHandler

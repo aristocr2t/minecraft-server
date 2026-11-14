@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")"
 rm -rf out thermo-1.0.0.jar
 mkdir -p out
-docker run --rm -v "$PWD":/app -w /app eclipse-temurin:25-jdk sh -c '
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD":/app -w /app eclipse-temurin:25-jdk sh -c '
   CP=$(ls lib/*.jar | tr "\n" ":") &&
   javac -encoding UTF-8 --release 25 -Xlint:-deprecation -cp "$CP" -d out $(find src -name "*.java") &&
   jar --create --file thermo-1.0.0.jar -C out . -C . plugin.yml -C . config.yml'
