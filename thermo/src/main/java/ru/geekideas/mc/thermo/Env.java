@@ -137,6 +137,21 @@ public final class Env {
         return Math.min(0.75, sum);
     }
 
+    /** Охлаждение от брони (кольчуга): сдвигает тело вниз — в жару помогает, в холод вредит. */
+    public static double cooling(Player player, FileConfiguration cfg) {
+        ConfigurationSection section = cfg.getConfigurationSection("cooling");
+        if (section == null) {
+            return 0;
+        }
+        double sum = 0;
+        for (ItemStack item : player.getInventory().getArmorContents()) {
+            if (item != null) {
+                sum += section.getDouble(item.getType().name(), 0);
+            }
+        }
+        return sum;
+    }
+
     /** Суммарный бонус одежды; мокрый игрок получает половину. */
     public static double clothing(Player player, FileConfiguration cfg, boolean wet) {
         ConfigurationSection section = cfg.getConfigurationSection("clothing");
