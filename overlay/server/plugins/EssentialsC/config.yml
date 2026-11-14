@@ -687,7 +687,7 @@ vanish:
   hide-from-tab: true
 
   # Give the player Night Vision while vanished so they can see in dark areas.
-  give-night-vision: true
+  give-night-vision: false
 
   # Prevent mobs from targeting vanished players.
   prevent-mob-target: true
