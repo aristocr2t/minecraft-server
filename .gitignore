@@ -132,11 +132,13 @@ server/plugins/*
 !overlay/**
 
 # build-выхлоп кастомных плагинов (собирается ./build-custom)
-seasonbiomes/out/
+seasons/out/
 
-# thermo/lib/*.jar — только classpath для сборки (в server/plugins не попадают)
+# thermo/lib/*.jar и seasons/lib/*.jar — только classpath для сборки (в server/plugins не попадают)
 !thermo/lib/
 !thermo/lib/*.jar
+!seasons/lib/
+!seasons/lib/*.jar
 
 /tmp
 .playwright-mcp/
