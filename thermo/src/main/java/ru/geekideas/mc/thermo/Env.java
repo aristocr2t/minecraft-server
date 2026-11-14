@@ -98,28 +98,62 @@ public final class Env {
         int radius = cfg.getInt("environment.heat-radius", 4);
         ConfigurationSection heat = cfg.getConfigurationSection("environment.heat");
         if (heat != null && radius > 0) {
-            Set<Material> found = EnumSet.noneOf(Material.class);
+            Set<Material> foundNear = EnumSet.noneOf(Material.class);
+            Set<Material> foundFar = EnumSet.noneOf(Material.class);
             Block origin = player.getLocation().getBlock();
             for (int dx = -radius; dx <= radius; dx++) {
                 for (int dy = -radius; dy <= radius; dy++) {
                     for (int dz = -radius; dz <= radius; dz++) {
                         Material m = origin.getRelative(dx, dy, dz).getType();
-                        if (found.contains(m)) {
+                        if (!heat.contains(m.name())) {
                             continue;
                         }
-                        if (heat.contains(m.name())) {
-                            found.add(m);
-                            t += heat.getDouble(m.name());
+                        if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && Math.abs(dz) <= 1) {
+                            foundNear.add(m);
+                        } else {
+                            foundFar.add(m);
                         }
                     }
                 }
             }
-            if (!found.isEmpty()) {
-                append(why, "тепло рядом");
+            // ближний блок даёт двойной бонус; каждый уникальный тип — отдельно,
+            // так что факел + фонарь + печь вместе греют сильнее одного факела
+            for (Material m : foundNear) {
+                t += heat.getDouble(m.name()) * 2.0;
+            }
+            for (Material m : foundFar) {
+                t += heat.getDouble(m.name());
+            }
+            if (!foundNear.isEmpty() || !foundFar.isEmpty()) {
+                append(why, foundNear.isEmpty() ? "тепло рядом" : "очень жарко рядом");
             }
         }
 
+        // Дом: над головой есть крыша (небо не видно), закрыто минимум minWalls сторон
+        // по горизонтали И в помещении есть свет (блокный уровень >= 8).
+        // Закрытая сторона — любой непрозрачный на вид блок (полный блок, ступенька, плита,
+        // забор, стекло, люк и т.п.).
+        double shelterBonus = cfg.getDouble("environment.shelter", 10.0);
+        int minWalls = Math.max(1, cfg.getInt("environment.shelter-walls", 2));
+        int closed = 0;
+        var eye = player.getEyeLocation().getBlock();
+        if (isOpaque(eye.getRelative(1, 0, 0).getType())) closed++;
+        if (isOpaque(eye.getRelative(-1, 0, 0).getType())) closed++;
+        if (isOpaque(eye.getRelative(0, 0, 1).getType())) closed++;
+        if (isOpaque(eye.getRelative(0, 0, -1).getType())) closed++;
+        boolean roof = isOpaque(eye.getRelative(0, 1, 0).getType());
+        boolean light = eye.getLightFromBlocks() >= 8;
+        boolean sheltered = roof && closed >= minWalls && light;
+        if (sheltered) {
+            t += (20 - t) * Math.min(0.9, shelterBonus / 20.0);
+            append(why, "дом");
+        }
         return new Result(t, why.length() == 0 ? "нейтрально" : why.toString());
+    }
+
+    /** «Непрозрачный на вид» блок: ступеньки, плиты, заборы, стёкла, люки — всё подходит. */
+    private static boolean isOpaque(Material material) {
+        return material.isOccluding() || material.isSolid();
     }
 
     /** Доля гашения погоды бронёй (0..0.75). */

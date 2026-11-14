@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -44,6 +45,7 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
 
     private final Map<UUID, Double> body = new HashMap<>();
     private final Map<UUID, BossBar> bars = new HashMap<>();
+    private final Map<UUID, BossBar> illnessBars = new HashMap<>();
     private final Map<UUID, Integer> outsideTicks = new HashMap<>();
     private final Map<UUID, Integer> illnessTicks = new HashMap<>();
     private final Map<UUID, Long> illnessUntil = new HashMap<>();
@@ -83,6 +85,10 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             bar.removeAll();
         }
         bars.clear();
+        for (BossBar bar : illnessBars.values()) {
+            bar.removeAll();
+        }
+        illnessBars.clear();
     }
 
     // ---------------------------------------------------------------- состояния
@@ -289,17 +295,46 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             }
         }
         illnessUntil.put(player.getUniqueId(), System.currentTimeMillis() + ticks * 50L);
+        BossBar bar = illnessBars.computeIfAbsent(player.getUniqueId(), k -> {
+            BossBar created = Bukkit.createBossBar("", BarColor.BLUE, BarStyle.SOLID);
+            created.addPlayer(player);
+            return created;
+        });
+        bar.setTitle("болезнь");
+        bar.setProgress(1.0);
+        bar.setColor(BarColor.BLUE);
+        bar.setVisible(true);
         player.sendActionBar(Component.text(message));
     }
 
     /** Лечение: только в постели. Ночью шанс выше, днём — просто лежишь, шанс вдвое меньше. */
     private void cureIllness(Player player, ConfigurationSection cfg) {
-        if (!player.hasPotionEffect(PotionEffectType.NAUSEA)) {
+        long until = illnessUntil.getOrDefault(player.getUniqueId(), 0L);
+        if (until <= 0) {
             return;
         }
-        long until = illnessUntil.getOrDefault(player.getUniqueId(), 0L);
-        if (System.currentTimeMillis() < until) {
-            return; // минимальная длительность болезни
+        BossBar bar = illnessBars.get(player.getUniqueId());
+        long now = System.currentTimeMillis();
+        double remaining = Math.max(0.0, (until - now) / 24000.0 / 50.0);
+        if (bar != null) {
+            double progress = Math.max(0.0, Math.min(1.0, remaining / Math.max(1, cfg.getInt("duration", 3))));
+            bar.setProgress(progress);
+            bar.setTitle(remaining >= 1.0
+                    ? "болезнь: " + String.format(java.util.Locale.ROOT, "%.1f", remaining) + " дн."
+                    : "болезнь: " + (int) Math.ceil(remaining * 24.0) + " ч.");
+            bar.setColor(progress > 0.66 ? BarColor.BLUE : (progress > 0.33 ? BarColor.PURPLE : BarColor.GREEN));
+        }
+        double total = Math.max(1, cfg.getInt("duration", 3)) * 24000.0 * 50.0;
+        double passed = total - Math.max(0.0, until - now);
+        double k = Math.max(0.0, Math.min(1.0, passed / total));
+        if (k > 0.5 && player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
+            player.removePotionEffect(PotionEffectType.WEAKNESS);
+        }
+        if (k > 0.8 && player.hasPotionEffect(PotionEffectType.NAUSEA)) {
+            player.removePotionEffect(PotionEffectType.NAUSEA);
+        }
+        if (now < until) {
+            return;
         }
         boolean night = player.getWorld().getTime() >= 12541 && player.getWorld().getTime() < 23458;
         double chance = cfg.getDouble("cure-chance-night", 0.4) * (night ? 1.0 : 0.5);
@@ -318,6 +353,10 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
         }
         illnessUntil.remove(player.getUniqueId());
         outsideTicks.remove(player.getUniqueId());
+        BossBar bar = illnessBars.remove(player.getUniqueId());
+        if (bar != null) {
+            bar.removeAll();
+        }
         player.sendActionBar(Component.text("вы выздоровели"));
     }
 
@@ -461,6 +500,25 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
                 || isThermometer(player.getInventory().getItemInOffHand());
     }
 
+
+    /** Молоко не лечит нашу болезнь: сразу возвращаем эффекты. */
+    @EventHandler
+    public void onMilk(PlayerItemConsumeEvent event) {
+        if (event.getItem().getType() != Material.MILK_BUCKET) {
+            return;
+        }
+        if (illnessUntil.getOrDefault(event.getPlayer().getUniqueId(), 0L) <= 0) {
+            return;
+        }
+        Bukkit.getScheduler().runTask(this, () -> {
+            Player player = event.getPlayer();
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, Integer.MAX_VALUE, 0, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, 0, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, Integer.MAX_VALUE, 0, true, false, true));
+            player.sendActionBar(Component.text("молоко не помогает: болезнь лечится только отдыхом"));
+        });
+    }
+
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (!isThermometer(event.getItem())) {
@@ -531,6 +589,10 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
         BossBar bar = bars.remove(event.getPlayer().getUniqueId());
         if (bar != null) {
             bar.removeAll();
+        }
+        BossBar illnessBar = illnessBars.remove(event.getPlayer().getUniqueId());
+        if (illnessBar != null) {
+            illnessBar.removeAll();
         }
         body.remove(event.getPlayer().getUniqueId());
         outsideTicks.remove(event.getPlayer().getUniqueId());
