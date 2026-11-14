@@ -49,6 +49,7 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
     private final Map<UUID, Integer> outsideTicks = new HashMap<>();
     private final Map<UUID, Integer> illnessTicks = new HashMap<>();
     private final Map<UUID, Long> illnessUntil = new HashMap<>();
+    private final Map<UUID, String> illnessSeason = new HashMap<>();
     private final Map<UUID, Integer> damageClock = new HashMap<>();
 
     private final List<State> states = new ArrayList<>();
@@ -281,6 +282,16 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             return;
         }
         outsideTicks.remove(id);
+        // крайне редко: раз в ~час непрерывного нарушения нормы; повторно в том же сезоне — ещё реже
+        if (Math.random() >= 0.02) {
+            return;
+        }
+        if (illnessSeason.getOrDefault(id, "").equals(season)) {
+            if (Math.random() >= 0.2) {
+                return;
+            }
+        }
+        illnessSeason.put(id, season);
         giveIllness(player, cfg.getInt("duration", 3), "вы заболели: ложитесь на кровать, ешьте, пейте воды");
     }
 
