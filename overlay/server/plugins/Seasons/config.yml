@@ -1,0 +1,191 @@
+# Сезонные биомы: карта исходных биомов и сезонные преобразования по ней.
+# Таблицы «исходный биом карты → биом сезона»: spring-map, summer-map, autumn-map, winter-map.
+# Ключ — то, что лежит в базе (original_biome), значение — что поставить в этот сезон.
+# Биом, которого нет в таблицах, не меняется никогда. Имена — без префикса minecraft:.
+# Опечатки при старте пишутся в лог и пропускаются.
+
+# Порция работы за тик: чанков и миллисекунд.
+chunks-per-tick: 16
+max-millis-per-tick: 20
+# Коммит в SQLite каждые N чанков.
+commit-every-chunks: 32
+# Строка прогресса сканирования каждые N чанков.
+log-every-chunks: 200
+
+# Полоса высот, которую заносим в карту (клетки 4×4×4 — точность самой игры).
+min-y: 40
+max-y: 320
+
+# Сканирование при старте сервера: продолжает карту с того места, где остановилось.
+# Список чанков берётся из region-файлов мира: отсутствующие чанки не генерируются,
+# уже просканированные не читаются второй раз.
+scan-on-enable: true
+# Необязательное ограничение карты в блоках от центра мира (0 = вся карта).
+scan-max-radius: 0
+
+# ВЕСНА = возврат к original_biome (как и restore). Если хотите отдельную весну,
+# раскомментируйте строки ниже — они переопределят возврат оригинала.
+spring-map: {}
+# spring-map:
+#   plains: flower_forest
+#   forest: birch_forest
+#   taiga: birch_forest
+#   swamp: mangrove_swamp
+#   cherry_grove: cherry_grove
+
+summer-map:
+  plains: sunflower_plains
+  forest: forest
+  taiga: taiga
+  swamp: swamp
+  jungle: jungle
+  savanna: savanna
+  desert: desert
+  beach: beach
+  ocean: warm_ocean
+  river: river
+  cherry_grove: forest
+  snowy_taiga: taiga
+  snowy_plains: plains
+  snowy_beach: beach
+  snowy_slopes: meadow
+  frozen_ocean: ocean
+  frozen_river: river
+  frozen_peaks: jagged_peaks
+  ice_spikes: snowy_plains
+  jagged_peaks: jagged_peaks
+  flower_forest: flower_forest
+  birch_forest: birch_forest
+  old_growth_birch_forest: old_growth_birch_forest
+  dark_forest: dark_forest
+  meadow: meadow
+  sunflower_plains: sunflower_plains
+  grove: grove
+  mangrove_swamp: mangrove_swamp
+  sparse_jungle: sparse_jungle
+  bamboo_jungle: bamboo_jungle
+  stony_shore: stony_shore
+  windswept_hills: windswept_hills
+  windswept_gravelly_hills: windswept_gravelly_hills
+  windswept_forest: windswept_forest
+  windswept_savanna: windswept_savanna
+  stony_peaks: stony_peaks
+  badlands: badlands
+  eroded_badlands: eroded_badlands
+  wooded_badlands: wooded_badlands
+  savanna_plateau: savanna_plateau
+  mushroom_fields: mushroom_fields
+  pale_garden: pale_garden
+  cold_ocean: cold_ocean
+  deep_cold_ocean: deep_cold_ocean
+  deep_ocean: deep_ocean
+  deep_lukewarm_ocean: deep_lukewarm_ocean
+  deep_frozen_ocean: deep_frozen_ocean
+  lukewarm_ocean: lukewarm_ocean
+  warm_ocean: warm_ocean
+
+# Осень: тусклее и суше; снежными становятся тайга и горы/предгорья.
+# Пики и ледники (jagged_peaks, frozen_peaks, snowy_slopes, ice_spikes) осенью
+# остаются снежными как есть — их в таблице нет.
+autumn-map:
+  plains: windswept_hills
+  forest: dark_forest
+  taiga: snowy_taiga
+  old_growth_pine_taiga: snowy_taiga
+  old_growth_spruce_taiga: snowy_taiga
+  swamp: dark_forest
+  jungle: dark_forest
+  savanna: windswept_savanna
+  desert: badlands
+  beach: stony_shore
+  ocean: cold_ocean
+  river: river
+  cherry_grove: dark_forest
+  windswept_hills: snowy_slopes
+  windswept_gravelly_hills: snowy_slopes
+  windswept_forest: snowy_taiga
+  meadow: snowy_slopes
+  stony_peaks: snowy_slopes
+  snowy_taiga: taiga
+  snowy_plains: plains
+  snowy_beach: beach
+  frozen_ocean: ocean
+  frozen_river: river
+  jagged_peaks: jagged_peaks
+  flower_forest: dark_forest
+  birch_forest: dark_forest
+  old_growth_birch_forest: dark_forest
+  dark_forest: dark_forest
+  sunflower_plains: windswept_hills
+  grove: snowy_taiga
+  mangrove_swamp: dark_forest
+  sparse_jungle: dark_forest
+  bamboo_jungle: dark_forest
+  stony_shore: stony_shore
+  windswept_savanna: windswept_savanna
+  badlands: badlands
+  eroded_badlands: eroded_badlands
+  wooded_badlands: dark_forest
+  savanna_plateau: windswept_savanna
+  mushroom_fields: mushroom_fields
+  pale_garden: dark_forest
+  cold_ocean: cold_ocean
+  deep_cold_ocean: deep_cold_ocean
+  deep_ocean: deep_ocean
+  deep_lukewarm_ocean: deep_lukewarm_ocean
+  deep_frozen_ocean: deep_frozen_ocean
+  lukewarm_ocean: lukewarm_ocean
+  warm_ocean: warm_ocean
+
+winter-map:
+  plains: snowy_plains
+  forest: snowy_taiga
+  taiga: snowy_taiga
+  old_growth_pine_taiga: snowy_taiga
+  old_growth_spruce_taiga: snowy_taiga
+  swamp: snowy_taiga
+  jungle: snowy_taiga
+  savanna: snowy_plains
+  desert: snowy_plains
+  beach: snowy_beach
+  ocean: frozen_ocean
+  river: frozen_river
+  cherry_grove: snowy_taiga
+  snowy_taiga: snowy_taiga
+  snowy_plains: snowy_plains
+  snowy_beach: snowy_beach
+  snowy_slopes: snowy_slopes
+  frozen_ocean: frozen_ocean
+  frozen_river: frozen_river
+  frozen_peaks: frozen_peaks
+  ice_spikes: ice_spikes
+  jagged_peaks: frozen_peaks
+  flower_forest: snowy_taiga
+  birch_forest: snowy_taiga
+  old_growth_birch_forest: snowy_taiga
+  dark_forest: snowy_taiga
+  meadow: snowy_plains
+  sunflower_plains: snowy_plains
+  grove: snowy_taiga
+  mangrove_swamp: snowy_taiga
+  sparse_jungle: snowy_taiga
+  bamboo_jungle: snowy_taiga
+  stony_shore: snowy_beach
+  windswept_hills: snowy_slopes
+  windswept_gravelly_hills: snowy_slopes
+  windswept_forest: snowy_taiga
+  windswept_savanna: snowy_plains
+  stony_peaks: frozen_peaks
+  badlands: snowy_plains
+  eroded_badlands: snowy_plains
+  wooded_badlands: snowy_taiga
+  savanna_plateau: snowy_plains
+  mushroom_fields: snowy_plains
+  pale_garden: snowy_taiga
+  cold_ocean: frozen_ocean
+  deep_cold_ocean: deep_frozen_ocean
+  deep_ocean: deep_frozen_ocean
+  deep_lukewarm_ocean: deep_frozen_ocean
+  deep_frozen_ocean: deep_frozen_ocean
+  lukewarm_ocean: frozen_ocean
+  warm_ocean: frozen_ocean
