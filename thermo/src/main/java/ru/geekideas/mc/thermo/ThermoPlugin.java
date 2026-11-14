@@ -470,7 +470,7 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
 
     /** Точка спавна без разброса: /gamerule spawnRadius на этом сервере недоступен. */
     @EventHandler
-    public void onSpawnLocation(org.spigotmc.event.player.PlayerSpawnLocationEvent event) {
+    public void onSpawnLocation(io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent event) {
         var cfg = getConfig();
         if (!cfg.getBoolean("spawn.exact", false)) {
             return;
