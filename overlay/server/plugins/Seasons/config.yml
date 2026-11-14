@@ -4,6 +4,14 @@
 # Биом, которого нет в таблицах, не меняется никогда. Имена — без префикса minecraft:.
 # Опечатки при старте пишутся в лог и пропускаются.
 
+# Случайные тики по сезонам: таяние снега и льда, рост культур.
+# Зима 0 — снег копится (осадки от этого не зависят), лето 10 — тает быстро.
+random-tick-speed:
+  spring: 3
+  summer: 10
+  autumn: 1
+  winter: 0
+
 # Порция работы за тик: чанков и миллисекунд.
 chunks-per-tick: 16
 max-millis-per-tick: 20
@@ -45,6 +53,7 @@ summer-map:
   ocean: warm_ocean
   river: river
   cherry_grove: forest
+  dappled_forest: dappled_forest
   snowy_taiga: taiga
   snowy_plains: plains
   snowy_beach: beach
@@ -101,6 +110,7 @@ autumn-map:
   ocean: cold_ocean
   river: river
   cherry_grove: dark_forest
+  dappled_forest: dark_forest
   windswept_hills: snowy_slopes
   windswept_gravelly_hills: snowy_slopes
   windswept_forest: snowy_taiga
@@ -151,6 +161,7 @@ winter-map:
   ocean: frozen_ocean
   river: frozen_river
   cherry_grove: snowy_taiga
+  dappled_forest: snowy_taiga
   snowy_taiga: snowy_taiga
   snowy_plains: snowy_plains
   snowy_beach: snowy_beach

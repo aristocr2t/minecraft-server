@@ -292,6 +292,25 @@ public final class SeasonsPlugin extends JavaPlugin implements TabExecutor {
         }
     }
 
+
+    /** Сезонная скорость случайных тиков: зимой 0 (снег только копится), летом быстрое таяние. */
+    private void applyRandomTickSpeed(World world, Season season) {
+        String state = season.state.toLowerCase(java.util.Locale.ROOT);
+        String key = "random-tick-speed." + state;
+        if (!getConfig().isInt(key)) {
+            return;
+        }
+        int value = getConfig().getInt(key);
+        try {
+            org.bukkit.GameRule<Integer> rule = org.bukkit.GameRule.RANDOM_TICK_SPEED;
+            Integer before = world.getGameRuleValue(rule);
+            world.setGameRule(rule, value);
+            getLogger().info("randomTickSpeed: " + before + " -> " + world.getGameRuleValue(rule) + " (" + state + ")");
+        } catch (Exception e) {
+            getLogger().warning("не удалось поставить randomTickSpeed: " + e);
+        }
+    }
+
     private void applyCommand(CommandSender sender, Season season, String[] args) {
         if (season == null) {
             tell(sender, "[Seasons] неизвестный сезон");
@@ -309,6 +328,7 @@ public final class SeasonsPlugin extends JavaPlugin implements TabExecutor {
         if (world == null) {
             return;
         }
+        applyRandomTickSpeed(world, season);
         Applier applier = new Applier(this, world, store, season, chunksPerTick, millisPerTick, radius, commitEvery);
         if (applier.planned() == 0) {
             tell(sender, "[Seasons] " + season.state
