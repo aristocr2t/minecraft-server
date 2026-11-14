@@ -85,6 +85,16 @@ public final class Env {
             }
         }
 
+        // блок под ногами: лёд и снег охлаждают
+        ConfigurationSection surface = cfg.getConfigurationSection("environment.surface");
+        if (surface != null) {
+            Material below = player.getLocation().clone().subtract(0, 0.2, 0).getBlock().getType();
+            if (surface.contains(below.name())) {
+                t += surface.getDouble(below.name());
+                append(why, "под ногами " + below.name().toLowerCase(java.util.Locale.ROOT));
+            }
+        }
+
         int radius = cfg.getInt("environment.heat-radius", 4);
         ConfigurationSection heat = cfg.getConfigurationSection("environment.heat");
         if (heat != null && radius > 0) {

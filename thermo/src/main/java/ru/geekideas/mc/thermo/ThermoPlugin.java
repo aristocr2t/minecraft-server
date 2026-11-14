@@ -168,7 +168,10 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             boolean wet = player.isInWater();
             double clothing = Env.clothing(player, cfg, wet);
 
-            double delta = (env.temperature() - 20) * factor + clothing;
+            // одежда — изоляция: тёплая гасит и жару, и холод, металл наоборот усиливает
+            double insulation = clothing;
+            double damping = 1 - Math.max(-0.5, Math.min(0.6, insulation * 0.15));
+            double delta = (env.temperature() - 20) * factor * damping;
             int food = player.getFoodLevel();
             if (food >= 18) {
                 delta += cfg.getDouble("factors.well-fed", 0.4);
