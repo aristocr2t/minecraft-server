@@ -16,7 +16,6 @@ luckperms	v5.5.71-bukkit	LuckPerms-Bukkit-5.5.71.jar
 placeholderapi	2.12.3	PlaceholderAPI-26.3.jar
 playtimereward	1.0	playtimereward-1.0.jar
 roundhaven	0.12.0	RoundHaven-26.3-0.12.0.jar
-seasonsplus	1.4.2-bb9c5f1	SeasonsPlus-1.4.2.jar
 simple-voice-chat	bukkit-2.6.27	voicechat-bukkit-2.6.27.jar
 simplehungergames	1.2	HungerGames-1.2.jar
 skinsrestorer	15.12.6	SkinsRestorer-15.12.6.jar
@@ -24,4 +23,4 @@ ujobs	1.0.8	UJobs-1.0.8.jar
 vaultunlocked	2.20.3	VaultUnlocked-2.20.3.jar
 worldedit	7.4.6	worldedit-bukkit-7.4.6.jar
 worldguard	7.0.21	worldguard-bukkit-7.0.21.jar
-manual	seasonsbar.jar	кастомный плагин: собирается ./build-custom (seasonsbar/build.sh)
+manual	climate.jar	кастомный плагин: собирается ./build-custom (climate/build.sh)

@@ -134,9 +134,9 @@ server/plugins/*
 # build-выхлоп кастомных плагинов (собирается ./build-custom)
 seasonbiomes/out/
 
-# seasonsbar/lib/*.jar — только classpath для сборки (в server/plugins не попадают)
-!seasonsbar/lib/
-!seasonsbar/lib/*.jar
+# thermo/lib/*.jar — только classpath для сборки (в server/plugins не попадают)
+!thermo/lib/
+!thermo/lib/*.jar
 
 /tmp
 .playwright-mcp/

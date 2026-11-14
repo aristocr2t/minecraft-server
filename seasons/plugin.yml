@@ -1,0 +1,17 @@
+name: Seasons
+version: 1.0.0
+main: ru.geekideas.mc.seasons.SeasonsPlugin
+api-version: '26.3'
+authors: [aristocr2t]
+description: Карта исходных биомов в SQLite и сезонные проходы spring/summer/autumn/winter.
+
+commands:
+  seasons:
+    description: Сезоны (scan/spring/summer/autumn/winter/restore/status/stop)
+    usage: '/seasons <scan|spring|summer|autumn|winter|restore|status|stop> [радиус]'
+    permission: seasons.admin
+
+permissions:
+  seasons.admin:
+    description: Управление сезонами
+    default: op
