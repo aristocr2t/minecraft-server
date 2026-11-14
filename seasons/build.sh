@@ -4,7 +4,7 @@
 set -e
 cd "$(dirname "$0")"
 mkdir -p out
-docker run --rm -v "$PWD":/app -w /app eclipse-temurin:25-jdk sh -c '
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD":/app -w /app eclipse-temurin:25-jdk sh -c '
   set -e
   rm -rf out seasons-1.0.0.jar
   mkdir -p out
