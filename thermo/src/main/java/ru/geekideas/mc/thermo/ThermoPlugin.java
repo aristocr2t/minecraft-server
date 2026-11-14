@@ -470,9 +470,13 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
 
     /** Точка спавна без разброса: /gamerule spawnRadius на этом сервере недоступен. */
     @EventHandler
-    public void onSpawnLocation(io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent event) {
+    public void onSpawnLocation(org.spigotmc.event.player.PlayerSpawnLocationEvent event) {
         var cfg = getConfig();
         if (!cfg.getBoolean("spawn.exact", false)) {
+            return;
+        }
+        // только для новых игроков: иначе каждого релога телепортировало бы на спавн
+        if (event.getPlayer().hasPlayedBefore()) {
             return;
         }
         var world = Bukkit.getWorld(cfg.getString("spawn.world", "world"));
@@ -480,6 +484,23 @@ public final class ThermoPlugin extends JavaPlugin implements Listener, TabExecu
             return;
         }
         event.setSpawnLocation(new org.bukkit.Location(world,
+                cfg.getDouble("spawn.x", 0.5),
+                cfg.getDouble("spawn.y", 68.0),
+                cfg.getDouble("spawn.z", 0.5)));
+    }
+
+    /** После смерти — ровно в точку спавна, без разброса. */
+    @EventHandler
+    public void onRespawn(org.bukkit.event.player.PlayerRespawnEvent event) {
+        var cfg = getConfig();
+        if (!cfg.getBoolean("spawn.exact", false) || event.isBedSpawn() || event.isAnchorSpawn()) {
+            return;
+        }
+        var world = Bukkit.getWorld(cfg.getString("spawn.world", "world"));
+        if (world == null) {
+            return;
+        }
+        event.setRespawnLocation(new org.bukkit.Location(world,
                 cfg.getDouble("spawn.x", 0.5),
                 cfg.getDouble("spawn.y", 68.0),
                 cfg.getDouble("spawn.z", 0.5)));
