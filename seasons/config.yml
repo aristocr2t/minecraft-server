@@ -10,7 +10,7 @@ random-tick-speed:
   spring: 3
   summer: 10
   autumn: 1
-  winter: 0
+  winter: 1
 
 # Порция работы за тик: чанков и миллисекунд.
 chunks-per-tick: 16
