@@ -11,6 +11,7 @@
 | `minecraft-server-admin` | там же | настройка и разбор проблем сервера |
 | `minecraft-datapack` | там же | датапаки, структуры, лут-таблицы |
 | `minecraft-essentials-ops` | там же | команды и конфиги EssentialsX |
+| `minecraft-bluemap-rerender` | собственный (aristocr2t) | полный перерендер BlueMap и погода через RCON на cyborgpc.local |
 
 ## Зависимости builder-скилла
 
